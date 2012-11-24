@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title><?=$this->title?></title>
+        <link rel="stylesheet" href="/front/css/main.css" />
+        <link rel="stylesheet" href="/front/css/dp.css" />
+        <script type="text/javascript" src="/front/js/jquery-1.8.2.min.js"></script>
+		<script type="text/javascript" src="/front/js/underscore-min.js"></script>
+		<script type="text/javascript" src="/front/js/backbone.js"></script>
+		<script type="text/javascript" src="/front/js/handlebars.js"></script>
+		<script type="text/javascript" src="/front/js/app.js"></script>
+    </head>
+    <body>
+        <div id="tp">
+
+        </div>
+        <div id="content">
+           		<div id="budget-area">
+           		<div id="header-top">
+					<div id="tp-left" date-field="remainder">
+						Остаток: <span data-field="remainder">{{remainder}}</span>
+					</div>
+					<div id="tp-right">
+						<b>Бюджет:</b> <span data-field="budget">{{budget}}</span> &nbsp;&nbsp;
+						<b>Расходы:</b> <span data-field="expenses">{{expenses}}</span>
+					</div>
+					<br class="clr" />
+				 </div>
+
+				 <div id="header">
+					 <div id="hd-left"><?=$this->page_title?></div>
+					 <div id="menu">
+							 <a href="#" action="deposit">Внести сумму</a>
+							 <a href="#" action="withdrawal">Забрать сумму</a>
+							 <a href="#" id="last">Новый месяц</a>
+					  </div>
+					<br class="clr" />
+				 </div>
+           		</div>
+           		<script>
+           			//bootstrap
+           			DataSource.budget = <?=$this->budget?>;
+					$(function(){
+						new Views.Budget({el: $('#budget-area'), model: Models.Budget.getInstance()});
+					});
+           		</script>
+	           	 <div id="left">
+	                <ul>
+	                    <li <?=is_location('/operations/flow/index') ? 'class="select"' : '' ?>>
+	                        <a href="/operations/flow/index">Денежный поток</a>
+	                    </li>
+	                    <li <?=is_location('/operations/planner/index') ? 'class="select"' : '' ?>>
+	                        <a href="/operations/planner/index">Планировщик</a>
+	                    </li>
+	                    <li <?=is_location('/logs/index/index') ? 'class="select"' : '' ?>>
+	                        <a href="/logs/index/index">Логи</a>
+	                    </li>
+	                    <li <?=is_location('/archive/index/index') ? 'class="select"' : '' ?>>
+	                        <a href="/archive/index/index">Архив</a>
+	                    </li>
+	                </ul>
+
+	                <?php if (is_location('/operations/planner/index')):?>
+	                <div id="new-gr">
+                    	<a href="#"><b>Добавить группу</b></a>
+                	</div>
+                	<?php endif;?>
+	            </div>
+	            <div id="right">
+
+	            		<?=$this->_getView();?>
+
+	            </div>
+            <div id="footer">
+                Kisya &amp; Solnyshko Co. All rights reserved. 2012
+            </div>
+        </div>
+
+<script id="withdrawal-dialog" type="text/template">
+<div class="form">
+	<table>
+		<tr>
+			<td>
+				Сумма:
+			</td>
+			<td>
+				<input type="text" name="amount" data-submit="allowed" />
+			</td>
+		</tr>
+	</table>
+	</div>
+</script>
+<?=$this->_html('common/dialog_layout.phtml')?>
+<?=$this->_html('common/confirm_dialog.phtml');?>
+<?=$this->_html('common/prompt_dialog.phtml');?>
+    </body>
+</html>
