@@ -1,7 +1,6 @@
 <?php
 namespace System\Lib;
 
-use \System\Lib\Boot;
 use \System\Lib\Config;
 use \System\Lib\Server;
 
@@ -22,15 +21,11 @@ class Router
 	 */
 	private $_array_path;
 
-	private $_default_path;
-
 	static private $_instance;
 
 	public function __construct($url)
 	{
 		$this->_parseUrl($url);
-
-		$this->_default_path = Config::getSettings('DEFAULT_PATH');
 	}
 
 	static public function getInstance()
@@ -43,23 +38,35 @@ class Router
 		return self::$_instance;
 	}
 
+	/**
+	 * Получаем текущий путь и последующие параметры в массиве.
+	 * @return array
+	 */
 	public function getArrayPath()
 	{
 		$path = $this->_array_path;
 
 		if ($this->isAdmin())
 		{
+			if (count($path) < 2)
+			{
+				$path = $this->_array_path = explode('/', 'admin/'.trim(Config::getInstance()->getSettings('DEFAULT_ADMIN_PATH'), '/'));
+			}
+
 			unset($path[0]);
 
-			return array_merge(array(), $path);
+			$path = array_merge(array(), $path);
 		}
+
+		$path[1] = always_set($path, 1, 'index');
+		$path[2] = always_set($path, 2, 'index');
 
 		return $path;
 	}
 
 	public function isAdmin()
 	{
-		return $this->_getType() == Config::getSettings('ADMIN_NAME');
+		return $this->_getType() == Config::getInstance()->getSettings('ADMIN_NAME');
 	}
 
 	/**
@@ -72,7 +79,7 @@ class Router
 
 		if ($path == '')
 		{
-			$path = $this->_default_path;
+			$path = Config::getInstance()->getSettings('DEFAULT_PATH');
 		}
 
 		$path = explode('?', $path);
@@ -92,7 +99,8 @@ class Router
 	}
 
 	/**
-	 * Возвращает тип класса
+	 * Возвращает первое значение сигмента url.
+	 * Служит отличительным признаком запроса.
 	 * @return string
 	 */
 	private function _getType()
@@ -106,7 +114,9 @@ class Router
 	 */
 	private function _standardController()
 	{
-		list ($module_name, $controller_name, $action_name) = $this->_getMainParts();
+		list ($module_name, $controller_name, $action_name) = $this->getArrayPath();
+
+		$action_name = $this->_prepareAction($action_name);
 
 		$controller_file = root_path().'/modules/'.$module_name.'/controllers/'.$controller_name.'.php';
 
@@ -209,21 +219,6 @@ class Router
 	}
 
 	/**
-	 * Выделяем основные части запроса
-	 * @return array
-	 */
-	private function _getMainParts()
-	{
-		$path = $this->getArrayPath();
-
-		return array(
-			$path[0],
-			always_set($path, 1, 'index'),
-			$this->_prepareAction(always_set($path, 2, 'index'))
-		);
-	}
-
-	/**
 	 * Уберает "-" из $action для того чтоб можно было вызвать как функцию
 	 * @param string $action
 	 */
@@ -239,9 +234,6 @@ class Router
 	 */
 	public function run()
 	{
-		$boot = new Boot();
-		$boot->run();
-
 		$method = '_'.$this->_getType().'Controller';
 
 		if (method_exists($this, $method))

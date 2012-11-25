@@ -15,8 +15,13 @@ class Minimizer
 
 	private $_output = '';
 
-	public function __construct($xml)
+	private $_admin_output = '';
+
+	private $_is_admin;
+
+	public function __construct($xml, $is_admin = false)
 	{
+		$this->_is_admin = $is_admin;
 		$this->_loadXML(trim($xml, '/'));
 	}
 
@@ -28,6 +33,8 @@ class Minimizer
 		$files = $this->_getFiles();
 
 		$this->_output = Server::get('document_root').$this->_xml->load->attributes()->output;
+		$this->_admin_output = Server::get('document_root').$this->_xml->load->attributes()->admin_output;
+
 
 		foreach ($files as $file)
 		{
@@ -59,6 +66,21 @@ class Minimizer
 
 		foreach ($this->_xml->load->group as $group)
 		{
+			if ($this->_is_admin)
+			{
+				if (!$group->attributes()->admin && !$group->attributes()->admin_only)
+				{
+					continue ;
+				}
+			}
+			else
+			{
+				if ($group->attributes()->admin_only)
+				{
+					continue ;
+				}
+			}
+
 			$base_path = $group->attributes()->base_path;
 
 			foreach ($group->js as $js)
@@ -69,6 +91,7 @@ class Minimizer
 
 		return $files;
 	}
+
 
 	private function _loadXML($xml)
 	{
@@ -85,9 +108,11 @@ class Minimizer
 
 	private function _saveJS($str)
 	{
-		if (!file_put_contents($this->_output, $str))
+		$real_output = $this->_is_admin ? $this->_admin_output : $this->_output;
+
+		if (!file_put_contents($real_output, $str))
 		{
-			throw new Exception('Cannot save into file: '.$this->_output);
+			throw new Exception('Cannot save into file: '.$real_output);
 		}
 	}
 }

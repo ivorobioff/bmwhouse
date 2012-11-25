@@ -1,4 +1,7 @@
 <?php
+use System\Lib\Router;
+use System\Lib\Config;
+
 function pre($str, $die = false)
 {
 	echo '<pre>';
@@ -41,4 +44,19 @@ function is_all_set(array $data = array(), array $fields = array())
 	}
 
 	return true;
+}
+
+function _t($text)
+{
+	return $text;
+}
+
+function get_admin_name()
+{
+	return Config::getInstance()->getSettings('ADMIN_NAME');
+}
+
+function is_admin()
+{
+	return Router::getInstance()->isAdmin();
 }

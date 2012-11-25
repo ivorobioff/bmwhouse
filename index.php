@@ -4,8 +4,6 @@ header('Content-Type: text/html; charset=utf-8');
 ini_set('display_errors', 'On');
 error_reporting(E_ALL);
 
-session_start();
-
 function root_path()
 {
 	return $_SERVER['DOCUMENT_ROOT'];
@@ -14,6 +12,7 @@ function root_path()
 include_once '/system/lib/shortcuts.php';
 include_once '/system/lib/autoloader.php';
 
+session_start();
 
 function __autoload($class)
 {

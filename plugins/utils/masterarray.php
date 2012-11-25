@@ -9,4 +9,14 @@ class MasterArray extends SmartArray
 	{
 		return array_keys($this->_data);
 	}
+
+	public function exists($key)
+	{
+		return array_key_exists($key, $this->_data);
+	}
+
+	public function get($key)
+	{
+		return $this->_data[$key];
+	}
 }

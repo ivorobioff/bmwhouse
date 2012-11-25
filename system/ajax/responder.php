@@ -24,6 +24,11 @@ class Responder
 		$this->_send($data);
 	}
 
+	public function sendSimpleResponse($data)
+	{
+		$this->_send($data);
+	}
+
 	private function _send(array $data)
 	{
 		echo json_encode($data);

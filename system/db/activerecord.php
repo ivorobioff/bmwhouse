@@ -39,19 +39,18 @@ abstract class ActiveRecord
 	private $_last_query = '';
 
 	static private $_db;
-	static private $_config_db = array();
 
 	public function __construct()
 	{
-		self::$_config_db = Config::getSettings('DB');
+		$_config_db = Config::getInstance()->getSettings('DB');
 
 		if (!self::$_db)
 		{
 			self::$_db = new \mysqli(
-				$this->_config_db['host'],
-				$this->_config_db['username'],
-				$this->_config_db['password'],
-				$this->_config_db['dbname']
+				$_config_db['host'],
+				$_config_db['username'],
+				$_config_db['password'],
+				$_config_db['dbname']
 			);
 		}
 

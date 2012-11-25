@@ -1,3 +1,3 @@
 Routes = {
-	'*params': 'get-logs'
+	
 }

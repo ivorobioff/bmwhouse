@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module title="Модули" pin="true">
+    <menu title="Модули" url="/modules/index/index">
+        <menu title="Установка" url="modules/index/install" />
+        <menu title="Удаление" url="modules/index/uninstall" />
+    </menu>
+</module>

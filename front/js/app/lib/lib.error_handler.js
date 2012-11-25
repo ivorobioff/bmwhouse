@@ -16,7 +16,7 @@ Lib.ErrorHandler = Class.extend({
 	 * Показывает ошибки
 	 * @public
 	 */
-	display: function(){
+	alert: function(){
 		var message = '';
 		var n = '';
 		for (var i in this._error_data){
