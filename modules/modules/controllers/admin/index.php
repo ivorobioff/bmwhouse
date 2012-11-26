@@ -1,13 +1,22 @@
 <?php
 namespace Controller\Modules\Admin;
 
-use Controller\Admin\Admin\Layout;
+use Controller\Common\Admin\Layout;
 
-class Index extends Layouts
+class Index extends Layout
 {
-	public function Index()
+	public function pins()
 	{
+		$this->_view->page_title = 'Важные модуля';
 
+		$this->_render('modules/admin/pins.phtml');
+	}
+
+	public function managment()
+	{
+		$this->_view->page_title = 'Управление модулями';
+
+		$this->_render('modules/admin/managment.phtml');
 	}
 
 	public function install()

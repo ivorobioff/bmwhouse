@@ -11,7 +11,7 @@ use Plugins\Validator\Rules\Email;
 
 class Index extends SystemController
 {
-	protected $_default_layout = 'admin/auth/index.phtml';
+	protected $_default_layout = 'auth/admin/index.phtml';
 
 	protected function _initPage()
 	{

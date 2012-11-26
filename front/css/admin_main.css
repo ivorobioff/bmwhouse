@@ -27,12 +27,17 @@ body
     
 }
 
+#tp-left #logo
+{
+	 color: #22B14C;
+	 text-decoration:none;
+}
+
 #tp-right
 {
     font-size: 10px;
     float: right;
     padding-top:15px;
-    padding-bottom:10px;
 }
 
 #content

@@ -3,12 +3,19 @@
     <load output="/front/js/app.js" admin_output="/front/js/admin_app.js">
     
         <group base_path="/front/js/app/lib/externals" admin="true">
-             <js src="jquery-1.8.2.min.js" />
+             <js src="jquery.js" />
+             <js src="jquery-ui.js" />
              <js src="underscore-min.js" />
              <js src="backbone.js" />
              <js src="handlebars.js" />
         </group>
-    
+        
+        <group base_path="/front/js/app/lib/externals" admin_only="true">
+             <js src="jquery-ui.js" />
+             <js src="grid.locale-ru.js" />
+             <js src="jq-grid.js" />
+        </group>
+        
         <group base_path="/front/js/app" admin="true">
             <js src="ns.js" />
             <js src="sys/resources.js" />

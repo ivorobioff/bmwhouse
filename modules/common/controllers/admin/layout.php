@@ -9,7 +9,7 @@ use Facade\Auth\Index as FacadeAuth;
 
 class Layout extends SystemController
 {
-	protected $_default_layout = 'admin/layout.phtml';
+	protected $_default_layout = 'common/admin/layout.phtml';
 
 	public function _initPage()
 	{
@@ -20,7 +20,11 @@ class Layout extends SystemController
 
 		QuickMin::run();
 
-		$this->_view->title = 'BMWHouse admin';
-		$this->_view->username = FacadeAuth::getInstance()->getUser()->get('username');
+		$this->_view->title = 'BMWHouse 1.0s';
+		$this->_view->page_title = '';
+ 		$this->_view->username = FacadeAuth::getInstance()
+			->getUser()
+			->get('username')
+			->ucfirst();
 	}
 }

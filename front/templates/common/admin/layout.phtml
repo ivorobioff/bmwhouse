@@ -3,6 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title><?=$this->title?></title>
+        <link rel="stylesheet" href="/front/css/jquery-ui.css" />
         <link rel="stylesheet" href="/front/css/admin_main.css" />
 		<script type="text/javascript" src="/front/js/admin_app.js"></script>
     </head>
@@ -11,6 +12,7 @@
 		<div id="content">
 			<div>
 				<div id="header-top">
+					<div id="tp-left"><a id="logo" href="/<?=get_admin_name()?>/">BMWHouse 1.0</a></div>
 					<div id="tp-right">
 						<b><?=$this->username?>:</b> <a href="/<?=get_admin_name()?>/auth/index/logout/" class="bmw-1">выход</a>
 					</div>
@@ -18,28 +20,16 @@
 				 </div>
 
 				 <div id="header">
-					 <div id="hd-left">Новости</div>
+					 <div id="hd-left"><?=$this->page_title?></div>
 					 <div id="menu">
-							 <a href="#" action="deposit">Установить модуль</a>
-							 <a href="#" action="withdrawal">Удалить  модуль</a>
+							 <a href="/<?=get_admin_name()?>/modules/index/managment/">Управление модулями</a>
 					  </div>
 					<br class="clr" />
 				 </div>
 			</div>
 			 <div id="left">
 				<ul>
-					<li class="select">
-						<a href="/operations/flow/index">Денежный поток</a>
-					</li>
-					<li <?=is_location('/operations/planner/index') ? 'class="select"' : '' ?>>
-						<a href="/operations/planner/index">Планировщик</a>
-					</li>
-					<li <?=is_location('/logs/index/index') ? 'class="select"' : '' ?>>
-						<a href="/logs/index/index">Логи</a>
-					</li>
-					<li <?=is_location('/archive/index/index') ? 'class="select"' : '' ?>>
-						<a href="/archive/index/index">Архив</a>
-					</li>
+
 				</ul>
 			</div>
 			<div id="right"><?=$this->_getView();?></div>

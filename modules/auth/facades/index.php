@@ -4,6 +4,11 @@ namespace Facade\Auth;
 use \Lib\Auth\Admin\Auth as AdminAuth;
 use \Lib\Auth\Auth;
 
+/**
+ * Общий доступ для системы авторизации
+ * @author Igor Vorobioff<i_am_vib@yahoo.com>
+ */
+
 class Index
 {
 	static private $_instance = null;

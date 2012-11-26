@@ -2,21 +2,49 @@
 namespace Plugins\Utils;
 
 use \Plugins\Utils\SmartArray;
+use \Plugins\Utils\MasterString;
 
 class MasterArray extends SmartArray
 {
 	public function keys()
 	{
-		return array_keys($this->_data);
+		return new self(array_keys($this->toArray()));
 	}
 
 	public function exists($key)
 	{
-		return array_key_exists($key, $this->_data);
+		return array_key_exists($key, $this);
 	}
 
 	public function get($key)
 	{
-		return $this->_data[$key];
+		return $this[$key];
+	}
+
+	public function offsetGet($offset)
+	{
+		$res = $this->_data[$offset];
+
+		if (is_string($res))
+		{
+			return new MasterString($res);
+		}
+
+		if (is_array($res))
+		{
+			return new self($res);
+		}
+
+		return $res;
+	}
+
+	public function toString($ch = ',')
+	{
+		return implode($ch, $this->toArray());
+	}
+
+	public function __toString()
+	{
+		return $this->toString();
 	}
 }
