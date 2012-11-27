@@ -1,4 +1,11 @@
 <div id="modules-container">
-<table id="modules-grid"></table>
-<div id="pager"></div>
+<table id="default-grid"></table>
+<div id="default-pager"></div>
 </div>
+<script>
+	Resources.modules_list = '/<?=get_admin_name();?>/modules/index/read-modules/',
+$(function(){
+	new Views.Admin.ModulesGrid();
+});
+
+</script>

@@ -41,17 +41,27 @@
             <js src="abstracts/models.abstract.js" />
         </group>
    
+        <group base_path="/front/js/app/models" admin_only="true">
+            <js src="models/models.admin.modules.js" />     
+            <js src="collections.admin.modules.js" />   
+        </group>
+   
         <group base_path="/front/js/app/views" admin="true">
             <js src="abstracts/views.abstract.super.js" />
             <js src="abstracts/views.abstract.view.js" />
             <js src="abstracts/views.abstract.collection.js"/>
             <js src="abstracts/views.abstract.form.js" />
+            <js src="abstracts/views.abstract.grid.js" />
             <js src="abstracts/views.abstract.dialogs.js" />
             <js src="views.confirmation.js" />
             <js src="views.prompt.js" />
             <js src="views.admin_auth.js" />
         </group>
-              
+         
+        <group base_path="/front/js/app/views" admin_only="true">
+            <js src="views.admin.modules_grid.js" />
+        </group>
+         
         <group base_path="/front/js/app/views/helpers" admin="true">
             <js src="abstracts/helpers.abstract.helper.js" />
         </group>

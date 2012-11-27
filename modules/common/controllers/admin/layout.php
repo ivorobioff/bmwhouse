@@ -22,9 +22,8 @@ class Layout extends SystemController
 
 		$this->_view->title = 'BMWHouse 1.0s';
 		$this->_view->page_title = '';
- 		$this->_view->username = FacadeAuth::getInstance()
-			->getUser()
-			->get('username')
-			->ucfirst();
+
+		$user_info =  FacadeAuth::getInstance()->getUser();
+ 		$this->_view->username = htmlspecialchars(ucfirst($user_info['username']));
 	}
 }

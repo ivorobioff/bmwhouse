@@ -3,7 +3,10 @@ namespace Plugins\Utils;
 
 use \Plugins\Utils\SmartArray;
 use \Plugins\Utils\MasterString;
-
+/**
+ * Класс все еще на стадии разработки. Не используется в проекте
+ * @author Igor Vorobioff<i_am_vib@yahoo.com>
+ */
 class MasterArray extends SmartArray
 {
 	public function keys()

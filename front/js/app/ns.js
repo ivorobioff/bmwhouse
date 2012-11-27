@@ -1,8 +1,9 @@
-var Helpers = {Abstract: {}};
-var Views = {Abstract: {}, Collection: {}};
-var Collections = {Abstract: {}};
-var Models = {Abstract: {}};
-var Routers = {Abstract: {}};
-var Lib = {Abstract: {}};
+var Helpers = {Abstract: {}, Admin:{}};
+var Views = {Abstract: {}, Collection: {}, Admin: {}};
+var Collections = {Abstract: {}, Admin: {}};
+var Models = {Abstract: {}, Admin: {}};
+var Routers = {Abstract: {}, Admin: {}};
+var Lib = {Abstract: {}, Admin: {}};
 var Resources = {};
 var DataSource = {};
+var Settings = {};

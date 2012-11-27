@@ -1,8 +1,6 @@
 <?php
 namespace Lib\Auth;
 
-use Plugins\Utils\MasterArray;
-
 use \System\Lib\Session;
 
 abstract class Common
@@ -22,7 +20,7 @@ abstract class Common
 
 		if($user = $this->_model->getAuthUser($email, $password))
 		{
-			Session::set('admin_user', new MasterArray($user));
+			Session::set('admin_user', $user);
 			return true;
 		}
 

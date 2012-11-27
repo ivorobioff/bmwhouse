@@ -1,6 +1,9 @@
 <?php
 namespace Plugins\Utils;
-
+/**
+ * Класс все еще на стадии разработки. Не используется в проекте
+ * @author Igor Vorobioff<i_am_vib@yahoo.com>
+ */
 class MasterString
 {
 	private $_string = '';

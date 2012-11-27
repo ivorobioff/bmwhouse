@@ -4020,14 +4020,15 @@ droppos:"first",autoid:true,autoidprefix:"dnd_"},a||{});if(a.connectWith){a.conn
 {});if(a.alsoResize){a._alsoResize_=a.alsoResize;delete a.alsoResize}else a._alsoResize_=false;if(a.stop&&b.isFunction(a.stop)){a._stop_=a.stop;delete a.stop}else a._stop_=false;a.stop=function(d,g){b(e).jqGrid("setGridParam",{height:b("#gview_"+c+" .ui-jqgrid-bdiv").height()});b(e).jqGrid("setGridWidth",g.size.width,a.shrinkToFit);a._stop_&&a._stop_.call(e,d,g)};a.alsoResize=a._alsoResize_?eval("("+("{'#gview_"+c+" .ui-jqgrid-bdiv':true,'"+a._alsoResize_+"':true}")+")"):b(".ui-jqgrid-bdiv","#gview_"+
 c);delete a._alsoResize_;b("#gbox_"+c).resizable(a)}})}})})(jQuery);
 
-var Helpers = {Abstract: {}};
-var Views = {Abstract: {}, Collection: {}};
-var Collections = {Abstract: {}};
-var Models = {Abstract: {}};
-var Routers = {Abstract: {}};
-var Lib = {Abstract: {}};
+var Helpers = {Abstract: {}, Admin:{}};
+var Views = {Abstract: {}, Collection: {}, Admin: {}};
+var Collections = {Abstract: {}, Admin: {}};
+var Models = {Abstract: {}, Admin: {}};
+var Routers = {Abstract: {}, Admin: {}};
+var Lib = {Abstract: {}, Admin: {}};
 var Resources = {};
 var DataSource = {};
+var Settings = {};
 /**
  * Местоположение ресурсов на сервере
  */
@@ -5243,6 +5244,12 @@ Collections.Abstract.Collection = Backbone.Collection.extend({
 });
 Models.Abstract.Model = Backbone.Model.extend({
 });
+Models.Admin.Modules = Models.Abstract.Model.extend({
+	
+});
+Collections.Admin.Modules = Collections.Abstract.Collection.extend({
+	model: Models.Admin.Modules
+});
 Views.Abstract.Super = Backbone.View.extend({
 	
 	_routes: null,
@@ -5359,6 +5366,39 @@ Views.Abstract.From = Views.Abstract.View.extend({
 	_onSubmit: function(data){
 		
 	},
+});
+Views.Abstract.Grid = Views.Abstract.View.extend({
+	
+	_grid: null,
+		
+	_default_settings: {
+		datatype: 'json',
+		sortname: 'id',
+	    sortorder: 'desc',
+	    viewrecords: true,
+	    gridview: true,
+	    autowidth:true,
+	    autoencode: true,
+	    hidegrid: false,
+	    rowNum: 10,
+	    pager: '#default-pager',
+	    height: '100%'
+	},
+	
+	initialize: function(){
+		Views.Abstract.View.prototype.initialize.apply(this, arguments);
+		this.render();
+	},
+	
+	render: function(){
+		var settings = _.clone(this._default_settings);
+		
+		this._grid = this.$el.jqGrid(_.extend(settings, this._getGridSettings()));
+	},
+	
+	_getGridSettings: function(){
+		return {};
+	}
 });
 $(function(){
 	Views.Abstract.Dialogs = Views.Abstract.View.extend({
@@ -5585,6 +5625,26 @@ $(function(){
 					this.enableUI();
 				}, this)
 			});
+		}
+	});
+});
+$(function(){
+	Views.Admin.ModulesGrid = Views.Abstract.Grid.extend({
+		
+		el: $('#default-grid'),
+		
+		_getGridSettings: function(){
+			return {
+				url: Resources.modules_list,
+			    colNames:['ID','Title', 'Description'],
+			    colModel :[ 
+			      {name: 'id', index: 'id', width: 20, resizable: false, align: 'center'}, 
+			      {name: 'title', index: 'title'}, 
+			      {name: 'description', index: 'description'},
+			    ],
+			    caption: 'Доступные модули',
+			    multiselect: true,
+			  }
 		}
 	});
 });
