@@ -1,9 +1,13 @@
 Views.Abstract.From = Views.Abstract.View.extend({
 	events: {
 		'click [type=submit]': function(){
-			var data = this.$el.dataForSubmit();
-			this._onSubmit(data);
+			this._onSubmit(this.$el.serialize());
 		}
+	},
+	
+	initialize: function(){
+		 Views.Abstract.View.prototype.initialize.apply(this, arguments);
+		 this._blockRealSubmission();
 	},
 	
 	enableUI: function(){
@@ -17,4 +21,8 @@ Views.Abstract.From = Views.Abstract.View.extend({
 	_onSubmit: function(data){
 		
 	},
+		
+	_blockRealSubmission: function(){
+		this.$el.submit(function(){ return false});
+	}
 });

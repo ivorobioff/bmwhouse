@@ -1,6 +1,7 @@
 <?php
 namespace Controller\Modules\Admin;
 
+use Model\Modules\Admin\Grid;
 use Controller\Common\Admin\Layout;
 
 class Index extends Layout
@@ -23,26 +24,8 @@ class Index extends Layout
 	{
 		$this->_mustBeAjax();
 
-		$res = array();
-
-		for ($i = 0; $i < 10; $i ++)
-		{
-			$row = array(
-				'id' => $i,
-				'cell' => array($i, 'Hey', 'You')
-			);
-
-			$res[] = $row;
-		}
-
-		$data = array(
-			'total' => '2',
-			'page' => '1',
-			'records' => '20',
-			'rows' => $res,
-		);
-
-		$this->_sendSimpleResponse($data);
+		$grid = new Grid();
+		$this->_sendSimpleResponse($grid->getData());
 
 	}
 

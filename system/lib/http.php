@@ -9,26 +9,49 @@ use System\Lib\Router;
  */
 class Http
 {
-	static public function get($key = null)
+	static public function get($key = null, $default = null)
 	{
-		return  self::_request('get', $key);
+		return  self::_request('get', $key, $default);
 	}
 
-	static public function post($key = null)
+	static public function post($key = null, $default = null)
 	{
-		return self::_request('post', $key);
+		return self::_request('post', $key, $default);
 	}
 
-	static private function _request($type, $key)
+	static public function request($key = null, $default = null)
 	{
-		$req = $type == 'post' ? $_POST : $_GET;
+		return self::_request('request', $key, $default);
+	}
+
+	static private function _request($type, $key, $default)
+	{
+		if ($type == 'get')
+		{
+			if (is_null($key))
+			{
+				return $_GET;
+			}
+
+			return always_set($_GET, $key, $default);
+		}
+
+		if ($type == 'post')
+		{
+			if (is_null($key))
+			{
+				return $_POST;
+			}
+
+			return always_set($_POST, $key, $default);
+		}
 
 		if (is_null($key))
 		{
-			return $req;
+			return $_REQUEST;
 		}
 
-		return $req[$key];
+		return always_set($_REQUEST, $key, $default);
 	}
 
 
@@ -44,7 +67,7 @@ class Http
 		exit(0);
 	}
 
-	static public function params($index = null)
+	static public function params($index = null, $default = false)
 	{
 		$url = Router::getInstance()->getArrayPath();
 
@@ -52,7 +75,12 @@ class Http
 
 		$url = array_merge(array(), $url);
 
-		return always_set($url, $index, null);
+		if (is_null($index))
+		{
+			return $url;
+		}
+
+		return always_set($url, $index, $default);
 	}
 
 	/**

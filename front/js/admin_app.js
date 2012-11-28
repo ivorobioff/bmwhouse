@@ -5350,9 +5350,13 @@ Views.Abstract.Collection = Views.Abstract.Super.extend({
 Views.Abstract.From = Views.Abstract.View.extend({
 	events: {
 		'click [type=submit]': function(){
-			var data = this.$el.dataForSubmit();
-			this._onSubmit(data);
+			this._onSubmit(this.$el.serialize());
 		}
+	},
+	
+	initialize: function(){
+		 Views.Abstract.View.prototype.initialize.apply(this, arguments);
+		 this._blockRealSubmission();
 	},
 	
 	enableUI: function(){
@@ -5366,6 +5370,10 @@ Views.Abstract.From = Views.Abstract.View.extend({
 	_onSubmit: function(data){
 		
 	},
+		
+	_blockRealSubmission: function(){
+		this.$el.submit(function(){ return false});
+	}
 });
 Views.Abstract.Grid = Views.Abstract.View.extend({
 	
@@ -5373,6 +5381,7 @@ Views.Abstract.Grid = Views.Abstract.View.extend({
 		
 	_default_settings: {
 		datatype: 'json',
+		mtype: 'GET',
 		sortname: 'id',
 	    sortorder: 'desc',
 	    viewrecords: true,
@@ -5381,8 +5390,13 @@ Views.Abstract.Grid = Views.Abstract.View.extend({
 	    autoencode: true,
 	    hidegrid: false,
 	    rowNum: 10,
+	    rowList: [10, 20, 50, 100],
 	    pager: '#default-pager',
-	    height: '100%'
+	    height: '100%',
+	    
+	    jsonReader : {
+	        repeatitems: false,
+	    },
 	},
 	
 	initialize: function(){
@@ -5636,11 +5650,39 @@ $(function(){
 		_getGridSettings: function(){
 			return {
 				url: Resources.modules_list,
-			    colNames:['ID','Title', 'Description'],
 			    colModel :[ 
-			      {name: 'id', index: 'id', width: 20, resizable: false, align: 'center'}, 
-			      {name: 'title', index: 'title'}, 
-			      {name: 'description', index: 'description'},
+			      {
+			    	  name: 'id', 
+			    	  label: 'ID',
+			    	  index: 'id', 
+			    	  width: 20, 
+			    	  resizable: false, 
+			    	  align: 'center'
+			      }, 
+			      
+			      {
+			    	  name: 'pin',
+			    	  label: 'Pin',
+			    	  index: 'pin', 
+			    	  width: 10, 
+			    	  resizable: false, 
+			    	  align: 'center', 
+			    	  sortable: false,
+			    	  formatter: 'checkbox',
+			    	  formatoptions: {disabled: false}
+			      },
+			      
+			      {
+			    	  name: 'title',
+			    	  label: 'Title',
+			    	  index: 'title'
+			      }, 
+			      {
+			    	  name: 'description', 
+			    	  label: 'Description',
+			    	  index: 'description', 
+			    	  sortable: false
+			      },
 			    ],
 			    caption: 'Доступные модули',
 			    multiselect: true,

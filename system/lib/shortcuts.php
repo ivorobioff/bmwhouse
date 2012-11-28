@@ -15,7 +15,7 @@ function pred($str, $die = false)
 	die();
 }
 
-function always_set($array, $key, $default = false)
+function always_set($array, $key, $default = null)
 {
 	return isset($array[$key]) ? $array[$key] : $default;
 }

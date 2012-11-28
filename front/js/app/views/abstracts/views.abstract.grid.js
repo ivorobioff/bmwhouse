@@ -4,6 +4,7 @@ Views.Abstract.Grid = Views.Abstract.View.extend({
 		
 	_default_settings: {
 		datatype: 'json',
+		mtype: 'GET',
 		sortname: 'id',
 	    sortorder: 'desc',
 	    viewrecords: true,
@@ -12,8 +13,13 @@ Views.Abstract.Grid = Views.Abstract.View.extend({
 	    autoencode: true,
 	    hidegrid: false,
 	    rowNum: 10,
+	    rowList: [10, 20, 50, 100],
 	    pager: '#default-pager',
-	    height: '100%'
+	    height: '100%',
+	    
+	    jsonReader : {
+	        repeatitems: false,
+	    },
 	},
 	
 	initialize: function(){

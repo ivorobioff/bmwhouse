@@ -3,9 +3,9 @@ namespace System\Lib;
 
 class Session
 {
-	static public function get($key)
+	static public function get($key, $default = null)
 	{
-		return $_SESSION[$key];
+		return always_set($_SESSION, $key, $default);
 	}
 
 	static public function set($key, $value)
