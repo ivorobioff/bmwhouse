@@ -10,7 +10,7 @@ class Grid extends CommonGrid
 	{
 		$modules = new ModelModules();
 
-		return $modules->fetchAll();
+		return $modules->getModules4Grid();
 	}
 
 	protected function _count()
@@ -22,9 +22,13 @@ class Grid extends CommonGrid
 	{
 		$res = array();
 
-		foreach ($this->_source as $id => $module)
+		$counter = 1;
+
+		foreach ($this->_source as $module)
 		{
-			$res[] = array_merge(array('id' => $id), $module['info']);
+			$res[] = array_merge(array('id' => $counter), $module['info']);
+
+			$counter ++;
 		}
 
 		return $res;

@@ -1,4 +1,9 @@
 <?php
+$info = array(
+	'title' => 'Менеджер модулей',
+	'description' => 'Модуль для управления другими модулями в сиситеме.',
+);
+
 $menu = array(
 	'title' => 'Менеджер модулей',
 	'url' => '/modules/index/managment',
@@ -12,10 +17,4 @@ $menu = array(
 			'url' => 'sadf'
 		)
 	)
-);
-
-$info = array(
-	'title' => 'Менеджер модулей',
-	'description' => 'Модуль для управления другими модулями в сиситеме.',
-	'pin' => true
 );

@@ -3,7 +3,7 @@ namespace Model\Modules\Admin;
 
 class Modules
 {
-	public function fetchAll()
+	public function getModules4Grid()
 	{
 		$modules = array();
 

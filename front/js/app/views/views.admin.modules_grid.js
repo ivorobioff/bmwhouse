@@ -43,6 +43,14 @@ $(function(){
 			    caption: 'Доступные модули',
 			    multiselect: true,
 			  }
+		},
+		
+		_onAddClick: function(){
+			alert('wow');
+		},
+	
+		_onRemoveClick: function(){
+			alert('wow');
 		}
 	});
 });
