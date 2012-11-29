@@ -6,14 +6,15 @@ $(function(){
 		_getGridSettings: function(){
 			return {
 				url: Resources.modules_list,
-			    colModel :[ 
+			    colModel :[          
 			      {
-			    	  name: 'id', 
-			    	  label: 'ID',
+			    	  name: 'counter', 
+			    	  label: '#',
 			    	  index: 'id', 
-			    	  width: 20, 
+			    	  width: 10, 
 			    	  resizable: false, 
-			    	  align: 'center'
+			    	  align: 'center',
+			    	  sortable: false,
 			      }, 
 			      
 			      {
@@ -24,14 +25,15 @@ $(function(){
 			    	  resizable: false, 
 			    	  align: 'center', 
 			    	  sortable: false,
-			    	  formatter: 'checkbox',
+			    	  formatter: $.proxy(this._formatPin, this),
 			    	  formatoptions: {disabled: false}
 			      },
 			      
 			      {
 			    	  name: 'title',
 			    	  label: 'Title',
-			    	  index: 'title'
+			    	  index: 'title',
+			    	  sortable: false
 			      }, 
 			      {
 			    	  name: 'description', 
@@ -45,12 +47,34 @@ $(function(){
 			  }
 		},
 		
-		_onAddClick: function(){
-			alert('wow');
+		
+		_formatPin: function(value, opt, row){
+			var checked = '';
+			var disabled = '';
+			
+			if (typeof value != 'undefined'){
+				checked = 'checked="checked"';
+			}
+			
+			if (typeof row.guid == 'undefined' || trim(row.guid) == ''){
+				disabled = 'disabled="disabled"';
+			}
+			
+			return '<input type="checkbox" ' + checked + ' ' + disabled + '/>';
 		},
-	
-		_onRemoveClick: function(){
-			alert('wow');
+		
+		_afterInsertRow: function(id, row, data){
+			if (typeof data.guid != 'undefined' && trim(data.guid) != ''){
+				this._grid.setSelection(id);
+			}
+		},
+    	  
+		_onApplyClick: function(){
+			var ids = this._grid.getGridParam('selarrrow');
+		},
+		
+		_onCancelClick: function(){
+		
 		}
 	});
 });

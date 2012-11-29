@@ -3,7 +3,12 @@ namespace Model\Modules\Admin;
 
 class Modules
 {
-	public function getModules4Grid()
+	public function get4Grid()
+	{
+		return $this->getAvailable();
+	}
+
+	public function getAvailable()
 	{
 		$modules = array();
 
@@ -21,14 +26,37 @@ class Modules
 				{
 					include $conf;
 
+					$guid = $this->_getGUID($path);
+
 					$modules[] = array(
 						'info' => $info,
-						'menu' => $menu
+						'menu' => $menu,
+						'guid' => $guid,
+						'name' => $dir->getFilename(),
 					);
 				}
 			}
 		}
 
 		return $modules;
+	}
+
+	private function _getGUID($path)
+	{
+		$guid = '';
+
+		$guid_file = $path.'/.guid';
+
+		if (file_exists($guid_file))
+		{
+			$guid = trim(file_get_contents($guid_file));
+		}
+
+		return $guid;
+	}
+
+	private function getSaved()
+	{
+
 	}
 }

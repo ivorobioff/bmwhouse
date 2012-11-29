@@ -8,7 +8,7 @@ Views.Abstract.Grid = Views.Abstract.View.extend({
 		sortname: 'id',
 	    sortorder: 'desc',
 	    viewrecords: true,
-	    gridview: true,
+	    gridview: false,
 	    autowidth:true,
 	    autoencode: true,
 	    hidegrid: false,
@@ -41,6 +41,8 @@ Views.Abstract.Grid = Views.Abstract.View.extend({
 	render: function(){
 		var settings = _.clone(this._default_settings);
 		
+		this._initGridEvents(settings);
+		
 		this._grid = this.$el.jqGrid(_.extend(settings, this._getGridSettings()));
 		this._settings = _.extend(settings, this._getGridSettings());
 		this._unsetDefaultButtons();
@@ -56,31 +58,37 @@ Views.Abstract.Grid = Views.Abstract.View.extend({
 	
 	_addCustomButtons: function(){
 		if (typeof this._onAddClick == 'function'){
-			this._grid.navButtonAdd(this._settings.pager, {
-			   caption: '', 
-			   buttonicon:'ui-icon-plus', 
-			   onClickButton: $.proxy(this._onAddClick, this),
-			   position:"last"
-			})
+			this._addButton(this._onAddClick, 'ui-icon-plus');
 		}
 		
 		if (typeof this._onEditClick == 'function'){
-			this._grid.navButtonAdd(this._settings.pager, {
-			   caption: '', 
-			   buttonicon:'ui-icon-pencil', 
-			   onClickButton: $.proxy(this._onAddClick, this),
-			   position:"last"
-			})
+			this._addButton(this._onEditClick, 'ui-icon-pencil');
 		}
 		
 		if (typeof this._onRemoveClick == 'function'){
-			this._grid.navButtonAdd(this._settings.pager, {
-			   caption: '', 
-			   buttonicon:'ui-icon-trash', 
-			   onClickButton: $.proxy(this._onAddClick, this),
-			   position:"last"
-			})
+			this._addButton(this._onRemoveClick, 'ui-icon-trash');
 		}
+		
+		if (typeof this._onApplyClick == 'function'){
+			this._addButton(this._onApplyClick, 'ui-icon-check');
+		}
+		
+		if (typeof this._onCancelClick == 'function'){
+			this._addButton(this._onCancelClick, 'ui-icon-cancel');
+		}
+	},
+	
+	_addButton: function(func, icon){
+		this._grid.navButtonAdd(this._settings.pager, {
+		   caption: '', 
+		   buttonicon: icon, 
+		   onClickButton: $.proxy(func, this),
+		   position:"last"
+		});
+	},
+	
+	_initGridEvents: function(settings){
+		settings.afterInsertRow = $.proxy(this._afterInsertRow, this);
 	},
 	
 	_getGridSettings: function(){
@@ -88,9 +96,16 @@ Views.Abstract.Grid = Views.Abstract.View.extend({
 	},
 	
 	/**
+	 * Делигация стандартных событий грида
+	 */
+	_afterInsertRow: function(){},
+	
+	/**
 	 * Если данные функц. будут реализованы, то в гриде появятся соответ. кнопачки. 
 	 */
 	_onAddClick: null,
 	_onEditClick: null,
 	_onRemoveClick: null,
+	_onApplyClick: null,
+	_onCancelClick: null,
 });

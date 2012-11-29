@@ -5385,7 +5385,7 @@ Views.Abstract.Grid = Views.Abstract.View.extend({
 		sortname: 'id',
 	    sortorder: 'desc',
 	    viewrecords: true,
-	    gridview: true,
+	    gridview: false,
 	    autowidth:true,
 	    autoencode: true,
 	    hidegrid: false,
@@ -5418,6 +5418,8 @@ Views.Abstract.Grid = Views.Abstract.View.extend({
 	render: function(){
 		var settings = _.clone(this._default_settings);
 		
+		this._initGridEvents(settings);
+		
 		this._grid = this.$el.jqGrid(_.extend(settings, this._getGridSettings()));
 		this._settings = _.extend(settings, this._getGridSettings());
 		this._unsetDefaultButtons();
@@ -5433,31 +5435,37 @@ Views.Abstract.Grid = Views.Abstract.View.extend({
 	
 	_addCustomButtons: function(){
 		if (typeof this._onAddClick == 'function'){
-			this._grid.navButtonAdd(this._settings.pager, {
-			   caption: '', 
-			   buttonicon:'ui-icon-plus', 
-			   onClickButton: $.proxy(this._onAddClick, this),
-			   position:"last"
-			})
+			this._addButton(this._onAddClick, 'ui-icon-plus');
 		}
 		
 		if (typeof this._onEditClick == 'function'){
-			this._grid.navButtonAdd(this._settings.pager, {
-			   caption: '', 
-			   buttonicon:'ui-icon-pencil', 
-			   onClickButton: $.proxy(this._onAddClick, this),
-			   position:"last"
-			})
+			this._addButton(this._onEditClick, 'ui-icon-pencil');
 		}
 		
 		if (typeof this._onRemoveClick == 'function'){
-			this._grid.navButtonAdd(this._settings.pager, {
-			   caption: '', 
-			   buttonicon:'ui-icon-trash', 
-			   onClickButton: $.proxy(this._onAddClick, this),
-			   position:"last"
-			})
+			this._addButton(this._onRemoveClick, 'ui-icon-trash');
 		}
+		
+		if (typeof this._onApplyClick == 'function'){
+			this._addButton(this._onApplyClick, 'ui-icon-check');
+		}
+		
+		if (typeof this._onCancelClick == 'function'){
+			this._addButton(this._onCancelClick, 'ui-icon-cancel');
+		}
+	},
+	
+	_addButton: function(func, icon){
+		this._grid.navButtonAdd(this._settings.pager, {
+		   caption: '', 
+		   buttonicon: icon, 
+		   onClickButton: $.proxy(func, this),
+		   position:"last"
+		});
+	},
+	
+	_initGridEvents: function(settings){
+		settings.afterInsertRow = $.proxy(this._afterInsertRow, this);
 	},
 	
 	_getGridSettings: function(){
@@ -5465,11 +5473,18 @@ Views.Abstract.Grid = Views.Abstract.View.extend({
 	},
 	
 	/**
+	 * Делигация стандартных событий грида
+	 */
+	_afterInsertRow: function(){},
+	
+	/**
 	 * Если данные функц. будут реализованы, то в гриде появятся соответ. кнопачки. 
 	 */
 	_onAddClick: null,
 	_onEditClick: null,
 	_onRemoveClick: null,
+	_onApplyClick: null,
+	_onCancelClick: null,
 });
 $(function(){
 	Views.Abstract.Dialogs = Views.Abstract.View.extend({
@@ -5707,14 +5722,15 @@ $(function(){
 		_getGridSettings: function(){
 			return {
 				url: Resources.modules_list,
-			    colModel :[ 
+			    colModel :[          
 			      {
-			    	  name: 'id', 
-			    	  label: 'ID',
+			    	  name: 'counter', 
+			    	  label: '#',
 			    	  index: 'id', 
-			    	  width: 20, 
+			    	  width: 10, 
 			    	  resizable: false, 
-			    	  align: 'center'
+			    	  align: 'center',
+			    	  sortable: false,
 			      }, 
 			      
 			      {
@@ -5725,14 +5741,15 @@ $(function(){
 			    	  resizable: false, 
 			    	  align: 'center', 
 			    	  sortable: false,
-			    	  formatter: 'checkbox',
+			    	  formatter: $.proxy(this._formatPin, this),
 			    	  formatoptions: {disabled: false}
 			      },
 			      
 			      {
 			    	  name: 'title',
 			    	  label: 'Title',
-			    	  index: 'title'
+			    	  index: 'title',
+			    	  sortable: false
 			      }, 
 			      {
 			    	  name: 'description', 
@@ -5746,12 +5763,34 @@ $(function(){
 			  }
 		},
 		
-		_onAddClick: function(){
-			alert('wow');
+		
+		_formatPin: function(value, opt, row){
+			var checked = '';
+			var disabled = '';
+			
+			if (typeof value != 'undefined'){
+				checked = 'checked="checked"';
+			}
+			
+			if (typeof row.guid == 'undefined' || trim(row.guid) == ''){
+				disabled = 'disabled="disabled"';
+			}
+			
+			return '<input type="checkbox" ' + checked + ' ' + disabled + '/>';
 		},
-	
-		_onRemoveClick: function(){
-			alert('wow');
+		
+		_afterInsertRow: function(id, row, data){
+			if (typeof data.guid != 'undefined' && trim(data.guid) != ''){
+				this._grid.setSelection(id);
+			}
+		},
+    	  
+		_onApplyClick: function(){
+			var ids = this._grid.getGridParam('selarrrow');
+		},
+		
+		_onCancelClick: function(){
+		
 		}
 	});
 });
