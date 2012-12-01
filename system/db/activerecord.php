@@ -250,13 +250,13 @@ abstract class ActiveRecord
 		return self::$_db->escape_string($str);
 	}
 
-	public function limit($limit, $offset = null)
+	public function limit($param1, $param2 = null)
 	{
-		$this->_query_buffer['limit'] = 'LIMIT '.$limit;
+		$this->_query_buffer['limit'] = 'LIMIT '.$param1;
 
-		if ($offset)
+		if ($param2)
 		{
-			$this->_query_buffer['limit'] .= ', '.$offset;
+			$this->_query_buffer['limit'] .= ', '.$param2;
 		}
 
 		return $this;

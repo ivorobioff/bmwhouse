@@ -25,7 +25,7 @@ class GridTest extends CommonGrid
 
 		return $this->_source
 			->orderBy('`'.$this->_state['order_by'].'`', $this->_state['order'])
-			->limit($limit, $offset)
+			->limit($offset, $limit)
 			->fetchAll();
 	}
 }
