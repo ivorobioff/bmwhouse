@@ -1,7 +1,7 @@
-var Helpers = {Abstract: {}, Admin:{}};
-var Views = {Abstract: {}, Collection: {}, Admin: {}};
-var Collections = {Abstract: {}, Admin: {}};
-var Models = {Abstract: {}, Admin: {}};
+var Helpers = {Abstract: {}, Admin: {}};
+var Views = {Abstract: {}, Collection: {}, Admin: {}, Grid: {}};
+var Collections = {Abstract: {}, Admin: {}, Grid: {}};
+var Models = {Abstract: {}, Admin: {}, Grid: {}};
 var Routers = {Abstract: {}, Admin: {}};
 var Lib = {Abstract: {}, Admin: {}};
 var Resources = {};

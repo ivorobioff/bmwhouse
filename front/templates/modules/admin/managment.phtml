@@ -1,11 +1,17 @@
 <div id="modules-container">
 <table id="default-grid"></table>
 <div id="default-pager"></div>
+<br/>
+<br/>
+<div id="test-bb-table"></div>
 </div>
 <script>
-	Resources.modules_list = '/<?=get_admin_name();?>/modules/index/read-modules/',
+Resources.modules_list = '/<?=get_admin_name();?>/modules/index/{method}-modules/',
+
 $(function(){
-	new Views.Admin.ModulesGrid();
+
+	new Views.Grid.Test();
+	//new Views.Admin.ModulesGrid();
 });
 
 </script>

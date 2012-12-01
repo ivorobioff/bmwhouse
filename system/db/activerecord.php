@@ -250,9 +250,9 @@ abstract class ActiveRecord
 		return self::$_db->escape_string($str);
 	}
 
-	public function limit($start, $offset = null)
+	public function limit($limit, $offset = null)
 	{
-		$this->_query_buffer['limit'] = 'LIMIT '.$start;
+		$this->_query_buffer['limit'] = 'LIMIT '.$limit;
 
 		if (is_int($offset))
 		{
