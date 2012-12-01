@@ -69,9 +69,6 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 	},
 	
 	refresh: function(){
-		this._rows.clear(function(row){
-			row.remove();
-		});
 		
 		var state = this.model.toJSON();
 		
@@ -82,6 +79,8 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 	},
 	
 	render: function(){
+		this._removeOldViews();
+		
 		var cell_settings = this.getCellSettings();
 		
 		var table = '';		
@@ -102,7 +101,7 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 		table = '<table id="table"><tr>' + table + '</tr></table>';
 		
 		this.$el.html(table);
-		
+	
 		this.collection.forEach(function(model){
 			var row = new Views.Grid.Row({model: model, settings: cell_settings});
 			this._rows.add(model.get('id'), row);
@@ -112,6 +111,12 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 		if (this._controls instanceof Views.Grid.Controls){
 			this._controls.refresh(this.model);
 		}
+	},
+	
+	_removeOldViews: function(){
+		this._rows.clear(function(row){
+			row.remove();
+		});
 	},
 	
 	/**

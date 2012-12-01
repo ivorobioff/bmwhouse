@@ -252,11 +252,11 @@ abstract class ActiveRecord
 
 	public function limit($param1, $param2 = null)
 	{
-		$this->_query_buffer['limit'] = 'LIMIT '.$param1;
+		$this->_query_buffer['limit'] = 'LIMIT '.intval($param1);
 
 		if ($param2)
 		{
-			$this->_query_buffer['limit'] .= ', '.$param2;
+			$this->_query_buffer['limit'] .= ', '.intval($param2);
 		}
 
 		return $this;
@@ -264,14 +264,14 @@ abstract class ActiveRecord
 
 	public function orderBy($field, $direction = 'DESC')
 	{
-		$this->_query_buffer['orderBy'][] = $field.' '.$direction;
+		$this->_query_buffer['orderBy'][] = $this->escape($field).' '.$this->escape($direction);
 
 		return $this;
 	}
 
 	public function groupBy($field)
 	{
-		$this->_query_buffer['groupBy'][] = $field;
+		$this->_query_buffer['groupBy'][] = $this->escape($field);
 		return $this;
 	}
 
