@@ -33,7 +33,8 @@ abstract class Grid
 
 	protected function _getRange()
 	{
-		$offset = ( $this->_state['current_page'] *  $this->_state['rows_per_page']) - $this->_state['rows_per_page'];
+		$offset = ($this->_state['current_page'] * $this->_state['rows_per_page']) - $this->_state['rows_per_page'];
+
 		$limit =  $this->_state['rows_per_page'];
 
 		return array($offset, $limit);
@@ -44,7 +45,7 @@ abstract class Grid
 		$this->_state = array(
 			'current_page' => Http::request('current_page', 1),
 			'rows_per_page' => Http::request('rows_per_page', 10),
-			'order' => Http::request('order', 'ASC'),
+			'order' => Http::request('order', 'asc'),
 			'order_by' => Http::request('order_by', 'id')
  		);
 	}

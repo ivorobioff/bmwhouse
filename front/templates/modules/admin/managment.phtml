@@ -1,8 +1,4 @@
 <div id="modules-container">
-<table id="default-grid"></table>
-<div id="default-pager"></div>
-<br/>
-<br/>
 <div id="test-bb-table"></div>
 </div>
 <script>
@@ -14,4 +10,25 @@ $(function(){
 	//new Views.Admin.ModulesGrid();
 });
 
+</script>
+
+<script type="text/template" id="test-bb-controls-tmp">
+<div id="test-bb-controls">
+	<table class="bmw-4">
+		<tr>
+			<td>
+				Страницы: {{pages_line}}
+			</td>
+			<td>
+				Всего: <b>{{total}}</b> на странице показано:
+				<select name="rows_per_page">
+					<option value="10" {{on_page 10}}>10</option>
+					<option value="20" {{on_page 20}}>20</option>
+					<option value="50" {{on_page 50}}>50</option>
+					<option value="100" {{on_page 100}}>100</option>
+				</select>
+			</td>
+		</tr>
+	</table>
+</div>
 </script>

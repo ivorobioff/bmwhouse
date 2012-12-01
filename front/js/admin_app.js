@@ -4187,10 +4187,10 @@ Lib.Collection = Class.extend({
 	clear: function(func, context){
 		this.each(function(item, key){
 			if (typeof func === 'function'){
-				func(item, key);
+				$.proxy(func(item, key), typeof context == 'undefined' ? this : context);
 			}
 			this.remove(key);
-		}, context);
+		});
 	},
 	
 	each: function(func, context){
@@ -4640,7 +4640,7 @@ Views.Abstract.View = Views.Abstract.Super.extend({
 		return this._models.get(key);
 	},
 	
-	getDom: function(){
+	getElement: function(){
 		return this.$el;
 	},
 	
@@ -4868,6 +4868,30 @@ $(function(){
 		}
 	});
 });
+Views.Grid.Controls = Views.Abstract.View.extend({
+	model: null,
+	
+	refresh: function(model){
+		var flag = this.model == null;
+		
+		this.model = model;
+		
+		if (flag){
+			this.render();
+			return true;
+		}
+		
+		this._refresh();
+	},
+	
+	render: function(){
+		
+	},
+	
+	_refresh: function(){
+		
+	}
+});
 Views.Grid.Row = Views.Abstract.View.extend({
 	
 	tagName: 'tr',
@@ -4958,10 +4982,6 @@ Views.Grid.Row = Views.Abstract.View.extend({
 		}
 		
 		return value;
-	},
-	
-	getElement: function(){
-		return this.$el;
 	}
 });
 Views.Grid.Table = Views.Abstract.Collection.extend({
@@ -4969,13 +4989,28 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 	url: '',
 	
 	events: {
-		
+		'click .grid-sortable': function(e){
+			var $e = $(e.target);
+			var dir = this.model.get('order') == 'asc' ? 'desc' : 'asc';
+			
+			this.model.set({
+				order_by: $e.attr('data-item'),
+				order: dir
+			});
+		}
 	},
-	
-	rows: null,
+
+	_rows: null,
+
+	_controls: null,
 	
 	initialize: function(){
-		this.rows = new Lib.Collection();
+		this._rows = new Lib.Collection();
+		
+		var controls_class = this._setControlsClass();
+		
+		this._controls = new controls_class();
+		
 		this.fetch();
 	},
 	
@@ -4988,6 +5023,7 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 	 */
 	fetch: function(state){
 		var state = state;
+		
 		if (typeof state != 'object'){
 			state = {};
 		}
@@ -4997,7 +5033,7 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 		
 		Lib.Requesty.read({
 			url: this.url,
-			date: state,
+			data: state,
 			success: $.proxy(function(nevermid, data){
 				if (typeof data.state != 'object'){
 					return false;
@@ -5019,9 +5055,9 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 	},
 	
 	refresh: function(){
-		this.rows.clear(function(row){
+		this._rows.clear(function(row){
 			row.remove();
-		}, this);
+		});
 		
 		var state = this.model.toJSON();
 		
@@ -5040,7 +5076,13 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 			
 			var label = typeof cell_settings[i].label == 'string' ?  cell_settings[i].label : '';
 			
-			table += '<th>' + label + '</th>';
+			var sortable = 'grid-sortable';
+			
+			if (cell_settings[i].sortable === false){
+				sortable = '';
+			}
+			
+			table += '<th class="' + sortable + '" data-item="' + i + '">' + label + '</th>';
 		}
 		
 		table = '<table id="table"><tr>' + table + '</tr></table>';
@@ -5049,9 +5091,13 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 		
 		this.collection.forEach(function(model){
 			var row = new Views.Grid.Row({model: model, settings: cell_settings});
-			this.rows.add(model.get('id'), row);
+			this._rows.add(model.get('id'), row);
 			this._appendRow(row);
 		}, this);
+		
+		if (this._controls instanceof Views.Grid.Controls){
+			this._controls.refresh(this.model);
+		}
 	},
 	
 	/**
@@ -5059,44 +5105,11 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 	 */
 	_appendRow: function(row){
 		this.$el.find('#table').append(row.getElement());
+	},
+	
+	_initControls: function(model){
+		return null;
 	}
-});
-$(function(){
-	Views.Grid.Test = Views.Grid.Table.extend({
-		el: $('#test-bb-table'),
-		
-		url: Resources.modules_list,
-		
-		counter: 0,
-		
-		getCellSettings: function(){
-			return {
-				id: {
-					label: 'ID',
-				},
-				
-				title: {
-					label: 'Тайтл',
-				},
-				
-				status: {
-					label: 'Статус',
-					formatter: function(value){
-						if (value == 1){
-							return '<span style="color:green">Активен</span>';
-						}
-						
-						return '<span style="color:red">Не активен</span>';
-					}
-				},
-				
-				order: {
-					label: 'Порядок'
-				}
-				
-			}
-		}
-	});
 });
 $(function(){
 	Views.Confirmation = Views.Abstract.Dialogs.extend({
@@ -5183,6 +5196,115 @@ $(function(){
 					this.enableUI();
 				}, this)
 			});
+		}
+	});
+});
+$(function(){
+	Views.Admin.GridControls = Views.Grid.Controls.extend({
+		
+		_template: $('#test-bb-controls-tmp'),
+		
+		events: {
+			'click [data-page]': function(e){
+				var $e = $(e.target);
+				var page = $e.attr('data-page');
+				
+				this.model.set('current_page', page);
+				
+				return false;
+			}
+		},
+		
+		render: function(){
+			var tmp = Handlebars.compile(this._template.html());
+			
+			var data = this.model.toJSON();
+			
+			Handlebars.registerHelper('on_page', function(value){
+				if (data.rows_per_page == value){
+					return 'selected="selected"';
+				}
+				return '';
+			});
+			
+			Handlebars.registerHelper('pages_line', $.proxy(function(){
+				var total_pages = 0;
+				
+				if (data.total > 0){
+					total_pages = Math.ceil(data.total / data.rows_per_page);
+				}
+				
+				if (data.total <= data.rows_per_page){
+					return '1';
+				}
+			
+				var line = '';
+				var d = '';
+				
+				var count = total_pages > 3 ? 3 : total_pages;
+								
+				for (var i = 1; i <= count; i ++){
+					line += d + '<a href="#" data-page="' + i + '">' + i + '</a>';
+					d = ' ';
+				}
+								
+				if (total_pages > 6){
+					line += d + '<input type="text" class="bmw-5" name="current_page" />';
+				}
+			
+				if (total_pages > 3){
+					for (var i = total_pages; i >= 4; i --){
+						line += d + '<a href="#" data-page="' + i + '">' + i + '</a>';
+					}
+				}
+				
+				return new Handlebars.SafeString(line);
+								
+			}, this));
+			
+			this.setElement($(tmp(data)));
+			
+			this.$el.insertAfter('#test-bb-table');
+		}
+	});
+});
+$(function(){
+	Views.Grid.Test = Views.Grid.Table.extend({
+		el: $('#test-bb-table'),
+		
+		url: Resources.modules_list,
+			
+		getCellSettings: function(){
+			return {
+				id: {
+					label: 'ID',
+				},
+				
+				title: {
+					label: 'Тайтл',
+					sortable: false
+				},
+				
+				status: {
+					label: 'Статус',
+					formatter: function(value){
+						if (value == 1){
+							return '<span style="color:green">Активен</span>';
+						}
+						
+						return '<span style="color:red">Не активен</span>';
+					}
+				},
+				
+				order: {
+					label: 'Порядок'
+				}
+				
+			}
+		},
+		
+		_setControlsClass: function(){
+			return Views.Admin.GridControls;
 		}
 	});
 });

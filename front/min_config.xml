@@ -48,12 +48,17 @@
             <js src="abstracts/views.abstract.collection.js"/>
             <js src="abstracts/views.abstract.form.js" />
             <js src="abstracts/views.abstract.dialogs.js" />
+            <js src="abstracts/grid/views.grid.controls.js" />
             <js src="abstracts/grid/views.grid.row.js" />
             <js src="abstracts/grid/views.grid.table.js" />
-            <js src="views.grid.test.js" />          
             <js src="views.confirmation.js" />
             <js src="views.prompt.js" />
             <js src="views.admin_auth.js" />
+        </group>
+                 
+        <group  base_path="/front/js/app/views" admin_only="true">
+            <js src="views.admin.grid_controls.js" />
+            <js src="views.grid.test.js" />          
         </group>
                  
         <group base_path="/front/js/app/views/helpers" admin="true">

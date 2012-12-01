@@ -88,9 +88,5 @@ Views.Grid.Row = Views.Abstract.View.extend({
 		}
 		
 		return value;
-	},
-	
-	getElement: function(){
-		return this.$el;
 	}
 });

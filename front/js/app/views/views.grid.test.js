@@ -3,9 +3,7 @@ $(function(){
 		el: $('#test-bb-table'),
 		
 		url: Resources.modules_list,
-		
-		counter: 0,
-		
+			
 		getCellSettings: function(){
 			return {
 				id: {
@@ -14,6 +12,7 @@ $(function(){
 				
 				title: {
 					label: 'Тайтл',
+					sortable: false
 				},
 				
 				status: {
@@ -32,6 +31,10 @@ $(function(){
 				}
 				
 			}
+		},
+		
+		_setControlsClass: function(){
+			return Views.Admin.GridControls;
 		}
 	});
 });

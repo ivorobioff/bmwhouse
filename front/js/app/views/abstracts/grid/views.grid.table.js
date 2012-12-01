@@ -3,13 +3,28 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 	url: '',
 	
 	events: {
-		
+		'click .grid-sortable': function(e){
+			var $e = $(e.target);
+			var dir = this.model.get('order') == 'asc' ? 'desc' : 'asc';
+			
+			this.model.set({
+				order_by: $e.attr('data-item'),
+				order: dir
+			});
+		}
 	},
-	
-	rows: null,
+
+	_rows: null,
+
+	_controls: null,
 	
 	initialize: function(){
-		this.rows = new Lib.Collection();
+		this._rows = new Lib.Collection();
+		
+		var controls_class = this._setControlsClass();
+		
+		this._controls = new controls_class();
+		
 		this.fetch();
 	},
 	
@@ -22,6 +37,7 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 	 */
 	fetch: function(state){
 		var state = state;
+		
 		if (typeof state != 'object'){
 			state = {};
 		}
@@ -31,7 +47,7 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 		
 		Lib.Requesty.read({
 			url: this.url,
-			date: state,
+			data: state,
 			success: $.proxy(function(nevermid, data){
 				if (typeof data.state != 'object'){
 					return false;
@@ -53,9 +69,9 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 	},
 	
 	refresh: function(){
-		this.rows.clear(function(row){
+		this._rows.clear(function(row){
 			row.remove();
-		}, this);
+		});
 		
 		var state = this.model.toJSON();
 		
@@ -74,7 +90,13 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 			
 			var label = typeof cell_settings[i].label == 'string' ?  cell_settings[i].label : '';
 			
-			table += '<th>' + label + '</th>';
+			var sortable = 'grid-sortable';
+			
+			if (cell_settings[i].sortable === false){
+				sortable = '';
+			}
+			
+			table += '<th class="' + sortable + '" data-item="' + i + '">' + label + '</th>';
 		}
 		
 		table = '<table id="table"><tr>' + table + '</tr></table>';
@@ -83,9 +105,13 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 		
 		this.collection.forEach(function(model){
 			var row = new Views.Grid.Row({model: model, settings: cell_settings});
-			this.rows.add(model.get('id'), row);
+			this._rows.add(model.get('id'), row);
 			this._appendRow(row);
 		}, this);
+		
+		if (this._controls instanceof Views.Grid.Controls){
+			this._controls.refresh(this.model);
+		}
 	},
 	
 	/**
@@ -93,5 +119,9 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 	 */
 	_appendRow: function(row){
 		this.$el.find('#table').append(row.getElement());
+	},
+	
+	_initControls: function(model){
+		return null;
 	}
 });

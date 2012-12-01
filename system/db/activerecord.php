@@ -254,9 +254,9 @@ abstract class ActiveRecord
 	{
 		$this->_query_buffer['limit'] = 'LIMIT '.$limit;
 
-		if (is_int($offset))
+		if ($offset)
 		{
-			$this->_query_buffer['limit'].', '.$offset;
+			$this->_query_buffer['limit'] .= ', '.$offset;
 		}
 
 		return $this;

@@ -18,7 +18,7 @@ Views.Abstract.View = Views.Abstract.Super.extend({
 		return this._models.get(key);
 	},
 	
-	getDom: function(){
+	getElement: function(){
 		return this.$el;
 	},
 	

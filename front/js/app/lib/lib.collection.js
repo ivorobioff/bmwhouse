@@ -26,10 +26,10 @@ Lib.Collection = Class.extend({
 	clear: function(func, context){
 		this.each(function(item, key){
 			if (typeof func === 'function'){
-				func(item, key);
+				$.proxy(func(item, key), typeof context == 'undefined' ? this : context);
 			}
 			this.remove(key);
-		}, context);
+		});
 	},
 	
 	each: function(func, context){
