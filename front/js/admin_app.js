@@ -3405,6 +3405,15 @@ function pred(data){
 	alert(JSON.stringify(data));
 }
 
+function always_set(obj, val, def){
+	if (!_.has(obj, val)){
+		return def;
+	}
+	
+	return obj[val];
+}
+
+
 /**
  * Создает синглтон для класа
  * @param class_name
@@ -4897,12 +4906,14 @@ Views.Grid.Row = Views.Abstract.View.extend({
 	tagName: 'tr',
 
 	_settings: null,
+	_parent: null,
 	
 	events: null,
-	
+		
 	initialize: function(){
 		Views.Abstract.View.prototype.initialize.apply(this, arguments);
-		this._settings = this.options.settings;
+		this._parent = this.options.parent;
+		this._settings = this._parent.getPreperedCellSettings();
 		this._initEvents();
 		this.render();
 		
@@ -4948,6 +4959,9 @@ Views.Grid.Row = Views.Abstract.View.extend({
 	render: function(){
 		var row = '';
 		
+		this.$el.attr('style', this._parent.getRowStyles());
+		this.$el.attr('class', this._parent.getRowClasses());
+		
 		for (var i  in this._settings){
 			var value = '';
 			
@@ -4958,8 +4972,12 @@ Views.Grid.Row = Views.Abstract.View.extend({
 			value = _.escape(value);
 			
 			value = this._passThroughFormatters(value, i);
-			
-			row += '<td id="' + i + '">' + value + '</td>';
+
+			if (this._settings[i].hidden !== true){
+				var cell_classes = this._parent.getDefaultCellClasses() + ' ' + always_set(this._settings[i], 'classes', '');
+				var cell_styles = this._parent.getDefaultCellStyles() + ' ' + always_set(this._settings[i], 'styles', '');
+				row += '<td class="' + cell_classes + '"  style="' + cell_styles + '" id="' + i + '">' + value + '</td>';
+			}
 		}
 		
 		this.$el.html(row);
@@ -4988,6 +5006,51 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 	
 	url: '',
 	
+	/**
+	 * Стили для таблицы
+	 */
+	_styles: '',
+	/**
+	 * Классы для таблицы
+	 */
+	_classes: '',
+	
+	/**
+	 * Дефолтные стили для хедера 
+	 */
+	_default_header_styles: '',
+	/**
+	 * Дефолтные классы для хедера 
+	 */
+	_default_header_classes: '',
+	
+	/**
+	 * Дефолтные стили для отдельных ячеек таблицы
+	 */
+	_default_cell_styles: '',
+	/**
+	 * Дефолтные классы для отдельных ячеек таблицы
+	 */
+	_default_cell_classes: '',
+	
+	/**
+	 * Дефолтные стили для строк таблицы
+	 */
+	_row_styles: '',
+	/**
+	 * Дефолтные классы для строк таблицы 
+	 */
+	_row_classes: '',
+	
+	/**
+	 * Дефолтные стили для строк таблицы
+	 */
+	_header_row_styles: '',
+	/**
+	 * Дефолтные классы для строк таблицы 
+	 */
+	_header_row_classes: '',
+	
 	events: {
 		'click .grid-sortable': function(e){
 			var $e = $(e.target);
@@ -5003,6 +5066,10 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 	_rows: null,
 
 	_controls: null,
+	
+	_cell_settings: null,
+	
+	_num_row: 0,
 	
 	initialize: function(){
 		this._rows = new Lib.Collection();
@@ -5031,6 +5098,8 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 		this.collection = new Collections.Grid.Rows([{id: 1, title: 'AERDF0001'}, {id: 2, title: 'RRR9999'}]);
 		this.model = new Models.Grid.State();
 		
+		this._disableUI();
+		
 		Lib.Requesty.read({
 			url: this.url,
 			data: state,
@@ -5049,8 +5118,12 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 				this.model.on('change', function(){
 					this.refresh();
 				}, this);
+				this._enableUI();
 			}, this),
 			
+			error: $.proxy(function(){
+				this._enableUI();
+			}, this)			
 		});
 	},
 	
@@ -5067,29 +5140,45 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 	render: function(){
 		this._removeOldViews();
 		
-		var cell_settings = this.getCellSettings();
+		this._cell_settings = this._getCellSettings();
 		
 		var table = '';		
 		
-		for (var i in cell_settings){
+		for (var i in this._cell_settings){
 			
-			var label = typeof cell_settings[i].label == 'string' ?  cell_settings[i].label : '';
+			var header_classes = this._default_header_classes + ' ' + always_set(this._cell_settings[i], 'header_classes', '');
+			var header_styles = this._default_header_styles + ' ' + always_set(this._cell_settings[i], 'header_styles', '');
+			
+			var label = typeof this._cell_settings[i].label == 'string' ?  this._cell_settings[i].label : '';
 			
 			var sortable = 'grid-sortable';
 			
-			if (cell_settings[i].sortable === false){
+			if (this.model.get('order_by') == i){
+				sortable += ' grid-sortable-active grid-sortable-' + this.model.get('order').toLowerCase();
+			}
+			
+			if (this._cell_settings[i].sortable === false){
 				sortable = '';
 			}
 			
-			table += '<th class="' + sortable + '" data-item="' + i + '">' + label + '</th>';
+			if (this._cell_settings[i].hidden !== true){
+				table += '<th class="' + sortable + ' ' + header_classes + '" style="' + header_styles + '" data-item="' + i + '">' + label + '</th>';
+			}
 		}
 		
-		table = '<table id="table"><tr>' + table + '</tr></table>';
+		table = '<table id="table" style="' + 
+		this._styles + '" class="' + 
+		this._classes + '" ><tr class="' + 
+		this._header_row_styles + '" styles="' + 
+		this._header_row_classes + '">' + table + '</tr></table>';
 		
 		this.$el.html(table);
 	
+		this._num_row = 0;
+		
 		this.collection.forEach(function(model){
-			var row = new Views.Grid.Row({model: model, settings: cell_settings});
+			this._num_row ++;
+			var row = new Views.Grid.Row({model: model, parent: this});
 			this._rows.add(model.get('id'), row);
 			this._appendRow(row);
 		}, this);
@@ -5114,6 +5203,45 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 	
 	_initControls: function(model){
 		return null;
+	},
+	
+	_getCellSettings: function(){
+		return {};
+	},
+	
+	/**
+	 * Возвращает текущее значение счетчика строк в гриде
+	 */
+	getCurrentNumRow: function(){
+		return this._num_row;
+	},
+	
+	getPreperedCellSettings: function(){
+		return this._cell_settings;
+	},
+	
+	getDefaultCellStyles: function(){
+		return this._default_cell_styles;
+	},
+	
+	getDefaultCellClasses: function(){
+		return this._default_cell_classes;
+	},
+	
+	getRowStyles: function(){
+		return this._row_styles;
+	},
+	
+	getRowClasses: function(){
+		return this._row_classes;
+	},
+	
+	_disableUI: function(){
+		
+	},
+	
+	_enableUI: function(){
+		
 	}
 });
 $(function(){
@@ -5333,20 +5461,29 @@ $(function(){
 		el: $('#test-bb-table'),
 		
 		url: Resources.modules_list,
-			
-		getCellSettings: function(){
+	
+		_classes: 'count_tb',
+		
+		_getCellSettings: function(){
 			return {
+							
 				id: {
-					label: 'ID',
+					label: 'ID <br/><span></span>',
+					header_styles: 'width: 20px;',
+					styles: 'text-align:center;'
 				},
 				
 				title: {
-					label: 'Тайтл',
-					sortable: false
+					label: 'Тайтл ',
+					sortable: false,
+					styles: '',
+					classes: '',
+					header_styles: '',
+					header_classes: ''
 				},
 				
 				status: {
-					label: 'Статус',
+					label: 'Статус   <br/><span></span>',
 					formatter: function(value){
 						if (value == 1){
 							return '<span style="color:green">Активен</span>';
@@ -5357,7 +5494,7 @@ $(function(){
 				},
 				
 				order: {
-					label: 'Порядок'
+					label: 'Порядок   <br/><span></span>'
 				}
 				
 			}

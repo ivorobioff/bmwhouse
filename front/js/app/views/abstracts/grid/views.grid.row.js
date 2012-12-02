@@ -3,12 +3,14 @@ Views.Grid.Row = Views.Abstract.View.extend({
 	tagName: 'tr',
 
 	_settings: null,
+	_parent: null,
 	
 	events: null,
-	
+		
 	initialize: function(){
 		Views.Abstract.View.prototype.initialize.apply(this, arguments);
-		this._settings = this.options.settings;
+		this._parent = this.options.parent;
+		this._settings = this._parent.getPreperedCellSettings();
 		this._initEvents();
 		this.render();
 		
@@ -54,6 +56,9 @@ Views.Grid.Row = Views.Abstract.View.extend({
 	render: function(){
 		var row = '';
 		
+		this.$el.attr('style', this._parent.getRowStyles());
+		this.$el.attr('class', this._parent.getRowClasses());
+		
 		for (var i  in this._settings){
 			var value = '';
 			
@@ -64,8 +69,12 @@ Views.Grid.Row = Views.Abstract.View.extend({
 			value = _.escape(value);
 			
 			value = this._passThroughFormatters(value, i);
-			
-			row += '<td id="' + i + '">' + value + '</td>';
+
+			if (this._settings[i].hidden !== true){
+				var cell_classes = this._parent.getDefaultCellClasses() + ' ' + always_set(this._settings[i], 'classes', '');
+				var cell_styles = this._parent.getDefaultCellStyles() + ' ' + always_set(this._settings[i], 'styles', '');
+				row += '<td class="' + cell_classes + '"  style="' + cell_styles + '" id="' + i + '">' + value + '</td>';
+			}
 		}
 		
 		this.$el.html(row);

@@ -21,12 +21,9 @@ class Grid extends CommonGrid
 	{
 		$res = array();
 
-		$counter = 1;
-
 		foreach ($this->_source as $module)
 		{
 			$res[] = array_merge(array('id' => $module['name']), $module['info']);
-			$counter ++;
 		}
 
 		return $res;

@@ -18,6 +18,15 @@ function pred(data){
 	alert(JSON.stringify(data));
 }
 
+function always_set(obj, val, def){
+	if (!_.has(obj, val)){
+		return def;
+	}
+	
+	return obj[val];
+}
+
+
 /**
  * Создает синглтон для класа
  * @param class_name

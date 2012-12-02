@@ -3,20 +3,29 @@ $(function(){
 		el: $('#test-bb-table'),
 		
 		url: Resources.modules_list,
-			
-		getCellSettings: function(){
+	
+		_classes: 'count_tb',
+		
+		_getCellSettings: function(){
 			return {
+							
 				id: {
-					label: 'ID',
+					label: 'ID <br/><span></span>',
+					header_styles: 'width: 20px;',
+					styles: 'text-align:center;'
 				},
 				
 				title: {
-					label: 'Тайтл',
-					sortable: false
+					label: 'Тайтл ',
+					sortable: false,
+					styles: '',
+					classes: '',
+					header_styles: '',
+					header_classes: ''
 				},
 				
 				status: {
-					label: 'Статус',
+					label: 'Статус   <br/><span></span>',
 					formatter: function(value){
 						if (value == 1){
 							return '<span style="color:green">Активен</span>';
@@ -27,7 +36,7 @@ $(function(){
 				},
 				
 				order: {
-					label: 'Порядок'
+					label: 'Порядок   <br/><span></span>'
 				}
 				
 			}

@@ -1,7 +1,7 @@
 <?php
 namespace Controller\Modules\Admin;
 
-use Model\Common\Admin\GridTest;
+use Model\Modules\Admin\Grid as ModulesGrid;
 use Controller\Common\Admin\Layout;
 
 class Index extends Layout
@@ -24,7 +24,7 @@ class Index extends Layout
 	{
 		$this->_mustBeAjax();
 
-		$grid = new GridTest();
+		$grid = new ModulesGrid();
 		$this->_sendSimpleResponse($grid->getData());
 
 	}

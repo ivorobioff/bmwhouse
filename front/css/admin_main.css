@@ -164,7 +164,75 @@ body
 	font-family:Arial;
 }
 
+.bmw-4 a
+{
+    color:#666666;  
+}
+
+.bmw-4 td
+{
+    width:50%;
+}
+
+.bmw-6
+{
+	text-align: right;
+}
+
 .bmw-5
 {
-	width:20px;
+	width:20px; 
+}
+
+.count_tb
+{
+    border-collapse: collapse;
+    width: 100%;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 11px;
+}
+
+.count_tb td, .count_tb th
+{
+    border: 1px solid #999999;  
+    padding:3px;  
+}
+
+.count_tb th
+{
+    padding:10px;
+    background: #DCDCDC;
+}
+
+#test-bb-table .grid-sortable
+{
+    cursor: pointer;
+}
+
+#test-bb-table .grid-sortable:hover
+{
+	background-color: #EFEDED;
+}
+
+#test-bb-table .grid-sortable-active
+{
+     background-color: #EFEDED;	
+}
+
+#test-bb-table .grid-sortable-active span
+{
+    width: 16px; 
+    height: 16px; 
+    display: inline-block;
+    background-image: url(/front/img/admin/ui/ui-icons_222222_256x240.png);
+}
+
+#test-bb-table .grid-sortable-desc span
+{
+	 background-position: -64px -16px;
+}
+
+#test-bb-table .grid-sortable-asc span
+{
+	  background-position: 0 -16px;
 }
