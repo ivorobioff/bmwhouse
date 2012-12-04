@@ -43,9 +43,7 @@
         </group>
       
         <group base_path="/front/js/app/views" admin="true">
-            <js src="abstracts/views.abstract.super.js" />
             <js src="abstracts/views.abstract.view.js" />
-            <js src="abstracts/views.abstract.collection.js"/>
             <js src="abstracts/views.abstract.form.js" />
             <js src="abstracts/views.abstract.dialogs.js" />
             <js src="abstracts/grid/views.grid.controls.js" />
@@ -57,12 +55,16 @@
         </group>
                  
         <group  base_path="/front/js/app/views" admin_only="true">
+            <js src="abstracts/views.abstract.dialogs.js" />
+            <js src="abstracts/views.abstract.admin_grid.js" />
             <js src="views.admin.grid_controls.js" />
-            <js src="views.grid.test.js" />          
+            <js src="views.admin.grid_test.js" />
+            <js src="views.admin.grid_modules.js" />          
         </group>
                  
         <group base_path="/front/js/app/views/helpers" admin="true">
             <js src="abstracts/helpers.abstract.helper.js" />
+            <js src="formatters/helpers.formatter.standard.js" />
         </group>
     </load>
 </minimize>

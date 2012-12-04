@@ -1,4 +1,4 @@
-Views.Grid.Table = Views.Abstract.Collection.extend({
+Views.Grid.Table = Views.Abstract.View.extend({
 	
 	url: '',
 	
@@ -65,15 +65,15 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 	
 	_cell_settings: null,
 	
-	_num_row: 0,
-	
 	initialize: function(){
 		this._rows = new Lib.Collection();
 		
 		var controls_class = this._setControlsClass();
 		
-		this._controls = new controls_class();
-		
+		if (typeof controls_class == 'function'){
+			this._controls = new controls_class();
+		}
+			
 		this.fetch();
 	},
 	
@@ -137,7 +137,7 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 		this._removeOldViews();
 		
 		this._cell_settings = this._getCellSettings();
-		
+			
 		var table = '';		
 		
 		for (var i in this._cell_settings){
@@ -169,16 +169,14 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 		this._header_row_classes + '">' + table + '</tr></table>';
 		
 		this.$el.html(table);
-	
-		this._num_row = 0;
-		
+			
 		this.collection.forEach(function(model){
 			this._num_row ++;
 			var row = new Views.Grid.Row({model: model, parent: this});
 			this._rows.add(model.get('id'), row);
 			this._appendRow(row);
 		}, this);
-		
+				
 		if (this._controls instanceof Views.Grid.Controls){
 			this._controls.refresh(this.model);
 		}
@@ -203,13 +201,6 @@ Views.Grid.Table = Views.Abstract.Collection.extend({
 	
 	_getCellSettings: function(){
 		return {};
-	},
-	
-	/**
-	 * Возвращает текущее значение счетчика строк в гриде
-	 */
-	getCurrentNumRow: function(){
-		return this._num_row;
 	},
 	
 	getPreperedCellSettings: function(){

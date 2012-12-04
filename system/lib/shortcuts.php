@@ -60,3 +60,8 @@ function is_admin()
 {
 	return Router::getInstance()->isAdmin();
 }
+
+function gen_guid()
+{
+	return uniqid();
+}

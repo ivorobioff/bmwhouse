@@ -3,11 +3,12 @@
 </div>
 <script>
 Resources.modules_list = '/<?=get_admin_name();?>/modules/index/{method}-modules/',
+Resources.pin_module = '/<?=get_admin_name();?>/modules/index/pin/',
+Resources.install_module = '/<?=get_admin_name();?>/modules/index/install/',
+Resources.uninstall_module = '/<?=get_admin_name();?>/modules/index/uninstall/',
 
 $(function(){
-
-	new Views.Grid.Test();
-	//new Views.Admin.ModulesGrid();
+	new Views.Admin.GridModules();
 });
 
 </script>

@@ -12,14 +12,14 @@ Lib.Collection = Class.extend({
 		return this;
 	},
 	
-	get: function(key){
-		return this._data[key];
+	get: function(key, def){
+		return always_set(this._data, key, def);
 	},
 	
 	remove: function(key){
 		delete this._data[key]; 
 	},
-	
+
 	/**
 	 * Очищает список. Перед удалением каждого из элементов, вызывает колбэк.
 	 */

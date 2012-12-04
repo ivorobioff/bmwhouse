@@ -10,7 +10,7 @@ Views.Grid.Row = Views.Abstract.View.extend({
 	initialize: function(){
 		Views.Abstract.View.prototype.initialize.apply(this, arguments);
 		this._parent = this.options.parent;
-		this._settings = this._parent.getPreperedCellSettings();
+		this._settings = this._parent.getPreperedCellSettings();		
 		this._initEvents();
 		this.render();
 		
@@ -20,16 +20,19 @@ Views.Grid.Row = Views.Abstract.View.extend({
 	},
 	
 	_initEvents: function(){
+		this.events = {};
+		
 		for (var i  in this._settings){
 			var events = this._settings[i].events;
-			this._assignEvents(events, i);
+			
+			if (typeof events == 'object'){
+				this._assignEvents(events, i);
+			}
 		}
 	},
 	
 	_assignEvents: function(events, item){
 		var new_events = {};
-		
-		this.events = {};
 		
 		for (var i in events){
 			new_events[this._prepareEvents(i, item)] = function(e){
@@ -50,7 +53,6 @@ Views.Grid.Row = Views.Abstract.View.extend({
 	
 	refresh: function(){
 		this.render();
-		this.delegateEvents();
 	},
 	
 	render: function(){
@@ -78,6 +80,7 @@ Views.Grid.Row = Views.Abstract.View.extend({
 		}
 		
 		this.$el.html(row);
+		this.delegateEvents();
 	},
 	
 	_passThroughFormatters: function(value, item){

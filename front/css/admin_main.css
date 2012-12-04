@@ -236,3 +236,16 @@ body
 {
 	  background-position: 0 -16px;
 }
+
+.light-icons
+{
+	background-image: url(/front/img/admin/ui/ui-icons_888888_256x240.png);
+	width:16px;
+	height:16px;
+	display: inline-block;
+}
+
+.cursor-pointer
+{
+	cursor: pointer;
+}

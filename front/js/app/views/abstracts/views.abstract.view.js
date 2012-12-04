@@ -1,12 +1,23 @@
-Views.Abstract.View = Views.Abstract.Super.extend({
+Views.Abstract.View = Backbone.View.extend({
 	
 	_models: null,
 	_params: null,
 		
+	
+	_routes: null,
+
 	initialize: function(){
-		Views.Abstract.Super.prototype.initialize.apply(this, arguments);
+		this._assignRoutes();
 		this._models = new Lib.Collection();
 		this._params = new Lib.Collection();
+	},
+
+	_assignRoutes: function(){
+		if (_.isObject(this._routes)){
+			for (var i in this._routes){
+				Lib.Router.getInstance().on('route:' + i, this._routes[i], this);
+			}		
+		}
 	},
 	
 	addModel: function(key, model){
@@ -35,7 +46,7 @@ Views.Abstract.View = Views.Abstract.Super.extend({
 	/**
 	 * получает прикрепленный параметр
 	 */
-	getParam: function(key){
-		return this._params.get(key);
+	getParam: function(key, def){
+		return this._params.get(key, def);
 	}
 });

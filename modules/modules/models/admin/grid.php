@@ -9,7 +9,7 @@ class Grid extends CommonGrid
 	protected function _prepareSource()
 	{
 		$modules = new ModelModules();
-		$this->_source = $modules->get4Grid();
+		$this->_source = $modules->getAll()->toArray();
 	}
 
 	protected function _count()

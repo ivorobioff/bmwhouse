@@ -3,6 +3,8 @@ namespace Controller\Modules\Admin;
 
 use Model\Modules\Admin\Grid as ModulesGrid;
 use Controller\Common\Admin\Layout;
+use \System\Lib\Http;
+use \Model\Modules\Admin\Modules as ModelModules;
 
 class Index extends Layout
 {
@@ -31,10 +33,21 @@ class Index extends Layout
 
 	public function install()
 	{
-
+		$id = Http::post('id');
+		$modules = new ModelModules();
 	}
 
 	public function uninstall()
+	{
+
+	}
+
+	public function refresh()
+	{
+
+	}
+
+	public function pin()
 	{
 
 	}

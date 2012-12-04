@@ -41,4 +41,16 @@ class Massive
 			$data[$field_name] = $rule($data[$field_name]);
 		}
 	}
+
+	static public function setKeyFromValue(array $data, $key)
+	{
+		$res = array();
+
+		foreach ($data as $item)
+		{
+			$res[$item[$key]] = $item;
+		}
+
+		return $res;
+	}
 }

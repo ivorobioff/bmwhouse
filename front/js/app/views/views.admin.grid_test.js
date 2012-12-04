@@ -1,11 +1,12 @@
+$.proxy(function(value, model, view){
+						var offset = model.get('current_page') * model.model.get('rows_per_page')
+					}, this)
 $(function(){
-	Views.Grid.Test = Views.Grid.Table.extend({
+	Views.Admin.GridTest = Views.Abstract.AdminGrid.extend({
 		el: $('#test-bb-table'),
 		
 		url: Resources.modules_list,
-	
-		_classes: 'count_tb',
-		
+			
 		_getCellSettings: function(){
 			return {
 							
@@ -40,10 +41,6 @@ $(function(){
 				}
 				
 			}
-		},
-		
-		_setControlsClass: function(){
-			return Views.Admin.GridControls;
 		}
 	});
 });

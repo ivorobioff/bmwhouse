@@ -19,6 +19,7 @@ function pred(data){
 }
 
 function always_set(obj, val, def){
+	
 	if (!_.has(obj, val)){
 		return def;
 	}
