@@ -5,19 +5,22 @@ use Db\Modules\Modules as TableModules;
 use System\Exceptions\Exception as SystemException;
 use System\Mvc\Model as SystemModel;
 use Lib\Modules\Results;
+use Lib\Modules\GridResults;
 
 class Modules extends SystemModel
 {
-	const MODULE_NOT_FOUND = 1;
-	const MODULE_CONFIG_NOT_FOUND = 2;
-	const MODULE_NOT_INSTALLED = 3;
-	const MODULE_GUID_NOT_SAVED = 4;
+	const MODULE_NOT_INSTALLED = 1;
+	const MODULE_GUID_NOT_SAVED = 2;
 
 	protected function _getTable()
 	{
 		return new TableModules();
 	}
 
+	/**
+	 * получаем данные о модуле из файла конфигурации смерджаные с сохранеными данными
+	 * @see System\Mvc.Model::getAll()
+	 */
 	public function getAll()
 	{
 		$files_modules = $this->_getAllFromFiles();
@@ -26,9 +29,9 @@ class Modules extends SystemModel
 		return new Results($files_modules, $saved_modules);
 	}
 
-	public function get()
+	public function getAll4Grid()
 	{
-
+		return new GridResults($this->getAll());
 	}
 
 	public function install()
@@ -61,22 +64,11 @@ class Modules extends SystemModel
 		{
 			if ($dir->isDir())
 			{
-				$path = $dir->getPathname();
+				$module = $this->_getFromFile($dir->getFilename());
 
-				$conf = $path.'/config.php';
-
-				if (file_exists($conf))
+				if ($module)
 				{
-					include $conf;
-
-					$guid = $this->_getGUID($path);
-
-					$modules[] = array(
-						'info' => $info,
-						'menu' => $menu,
-						'guid' => $guid,
-						'name' => $dir->getFilename(),
-					);
+					$modules[] = $module;
 				}
 			}
 		}
@@ -86,16 +78,13 @@ class Modules extends SystemModel
 
 	private function _getFromFile($name)
 	{
-		$path = root_path().'/modules/'.$name.'/';
+		$path = root_path().'/modules/'.$name;
 
-		if (!file_exists($path))
-		{
-			throw new SystemException('Модуль "'.$name.'" не найден', self::MODULE_NOT_FOUND);
-		}
+		$conf = $path.'/config.php';
 
-		if (!file_exists($path.'config.php'))
+		if (!file_exists($conf))
 		{
-			throw new SystemException('Конфигурации модуля "'.$name.'" не найдены', self::MODULE_CONFIG_NOT_FOUND);
+			return false;
 		}
 
 		include $conf;
@@ -107,6 +96,7 @@ class Modules extends SystemModel
 			'menu' => $menu,
 			'guid' => $guid,
 			'name' => $name,
+			'pin' => 0,
 		);
 	}
 

@@ -8,17 +8,9 @@ class Results extends SmartArray
 {
 	private $_saved_modules = array();
 
-	private $_id = '';
-
-	private $_real_data;
-
 	public function __construct(array $data, $saved_modules)
 	{
 		parent::__construct($data);
-
-		$this->_real_data = $data;
-
-		$this->_id = $data['name'];
 
 		$this->_saved_modules = Massive::setKeyFromValue($saved_modules, 'guid');
 	}
@@ -31,20 +23,19 @@ class Results extends SmartArray
 
 		if ($guid && isset($this->_saved_modules[$guid]))
 		{
-			return $this->_prepareItem($this->_saved_modules[$guid]);
+			$item = $this->_mergeItems($item, $this->_saved_modules[$guid]);
 		}
 
-		return $this->_prepareItem($item);
+		return $item;
 	}
 
-	private function _prepareItem(array $item)
+	private function _mergeItems(array $item, array $saved_item)
 	{
-		return array(
-			'id' => $this->_id,
-			'title' => $item['title'],
-			'description' => $item['description'],
-			'pin' => always_set($item, 'pin', 0),
-			'guid' => $item['guid']
-		);
+		$item['info']['title'] = $saved_item['title'];
+		$item['info']['description'] = $saved_item['description'];
+		$item['pin'] = $saved_item['pin'];
+		$item['menu'] = unserialize($saved_item['menu']);
+
+		return $item;
 	}
 }

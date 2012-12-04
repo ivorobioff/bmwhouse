@@ -5638,17 +5638,33 @@ $(function(){
 					sortable: false,
 					
 					events: {
-						'click input': function(){
+						'click input': function(e){
+							var $e = $(e.target);
+							var url = Resources.install_module;
+							
+							if (!$e.attr('checked')){
+								url = Resources.uninstall_module;
+							}
+							
 							Lib.Requesty.post({
-								url: Resources.install_module,
+								url: url,
 								data: model.get('id'),
+								
+								success: function(){
+									
+								},
+								
+								error: function(error_handler){
+									error_handler.alert();
+								},
+								
 								followers: model
 							});
 						}
 					},
 					formatter: function(value, model){
 						var checked = '';
-						if (model.has('guid')){
+						if (model.has('guid') && trim(model.get('guid')) != ''){
 							checked = 'checked="checked"';
 						}
 						
@@ -5680,7 +5696,7 @@ $(function(){
 					sortable: false,
 					
 					events:{
-						'click': function(value, model){
+						'click span': function(value, model){
 							if (!model.has('guid')){
 								return ;
 							}
@@ -5693,7 +5709,7 @@ $(function(){
 					
 					formatter: function(value, model, view){
 						
-						if (!model.has('guid')){
+						if (!model.has('guid') || trim(model.get('guid') == '')){
 							return '';
 						}
 						
@@ -5714,7 +5730,7 @@ $(function(){
 					sortable: false,
 					
 					events: {
-						'click': function(value, model){
+						'click span': function(value, model){
 							if (!model.has('guid')){
 								return ;
 							}
@@ -5722,7 +5738,7 @@ $(function(){
 					},
 					
 					formatter: function(view, model){
-						if (!model.has('guid')){
+						if (!model.has('guid') || trim(model.get('guid') == '')){
 							return '';
 						}
 						return '<span class="light-icons cursor-pointer ui-icon-refresh"></span>';

@@ -1,7 +1,7 @@
 <?php
 namespace Plugins\Utils;
 
-abstract class SmartArray implements \ArrayAccess, \Iterator
+abstract class SmartArray implements \ArrayAccess, \Iterator, \Countable
 {
 	protected $_data = array();
 
@@ -78,5 +78,10 @@ abstract class SmartArray implements \ArrayAccess, \Iterator
 		}
 
 		return $res;
+	}
+
+	public function count()
+	{
+		return count($this->_data);
 	}
 }

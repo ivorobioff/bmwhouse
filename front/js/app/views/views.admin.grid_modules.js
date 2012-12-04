@@ -47,7 +47,7 @@ $(function(){
 					},
 					formatter: function(value, model){
 						var checked = '';
-						if (model.has('guid')){
+						if (model.has('guid') && trim(model.get('guid')) != ''){
 							checked = 'checked="checked"';
 						}
 						
@@ -92,7 +92,7 @@ $(function(){
 					
 					formatter: function(value, model, view){
 						
-						if (!model.has('guid')){
+						if (!model.has('guid') || trim(model.get('guid') == '')){
 							return '';
 						}
 						
@@ -121,7 +121,7 @@ $(function(){
 					},
 					
 					formatter: function(view, model){
-						if (!model.has('guid')){
+						if (!model.has('guid') || trim(model.get('guid') == '')){
 							return '';
 						}
 						return '<span class="light-icons cursor-pointer ui-icon-refresh"></span>';

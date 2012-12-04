@@ -9,7 +9,7 @@ class Grid extends CommonGrid
 	protected function _prepareSource()
 	{
 		$modules = new ModelModules();
-		$this->_source = $modules->getAll()->toArray();
+		$this->_source = $modules->getAll4Grid();
 	}
 
 	protected function _count()
@@ -19,13 +19,6 @@ class Grid extends CommonGrid
 
 	protected function _getRows()
 	{
-		$res = array();
-
-		foreach ($this->_source as $module)
-		{
-			$res[] = array_merge(array('id' => $module['name']), $module['info']);
-		}
-
-		return $res;
+		return $this->_source->toArray();
 	}
 }
