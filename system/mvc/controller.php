@@ -44,17 +44,17 @@ abstract class Controller
 
 	}
 
-	protected function _sendError(array $data = array())
+	protected function _sendError($data = array())
 	{
 		$this->_ajax_responder->sendError($data);
 	}
 
-	protected function _sendResponse(array $data = array())
+	protected function _sendResponse($data = array())
 	{
 		$this->_ajax_responder->sendResponse($data);
 	}
 
-	protected function _sendExtendedResponse(array $data = array())
+	protected function _sendExtendedResponse($data = array())
 	{
 		$this->_ajax_responder->sendExtendedResponse($data);
 	}

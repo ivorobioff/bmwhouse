@@ -1,6 +1,8 @@
 <?php
 namespace Model\Modules\Admin;
 
+use Lib\Modules\GridRows;
+use Lib\Modules\Rows;
 use Db\Modules\Modules as TableModules;
 use System\Exceptions\Exception as SystemException;
 use System\Mvc\Model as SystemModel;
@@ -9,8 +11,7 @@ use Lib\Modules\GridResults;
 
 class Modules extends SystemModel
 {
-	const MODULE_NOT_INSTALLED = 1;
-	const MODULE_GUID_NOT_SAVED = 2;
+	const MODULE_GUID_NOT_SAVED = 1;
 
 	protected function _getTable()
 	{
@@ -23,7 +24,11 @@ class Modules extends SystemModel
 	 */
 	public function getAll()
 	{
-		$files_modules = $this->_getAllFromFiles();
+		if (!$files_modules = $this->_getAllFromFiles())
+		{
+			return array();
+		}
+
 		$saved_modules = $this->_table->fetchAll();
 
 		return new Results($files_modules, $saved_modules);
@@ -34,24 +39,68 @@ class Modules extends SystemModel
 		return new GridResults($this->getAll());
 	}
 
-	public function install()
+	/**
+	 * (non-PHPdoc)
+	 * @see System\Mvc.Model::get()
+	 */
+	public function get()
 	{
-		$name = $this->_id;
-
-		$module = $this->_getFromFile($name);
-
-		$data = array(
-				'title' => $module['info']['title'],
-				'description' => $module['info']['description'],
-				'menu' => serialize($module['menu'])
-		);
-
-		if (!$this->_table->insert($data))
+		if (!$files_model = $this->_getFromFile($this->_id))
 		{
-			throw new SystemException('Модуль "'.$name.'" небыл установлен', self::MODULE_NOT_INSTALLED);
+			return array();
 		}
 
-		$this->_saveGUID(root_path().'/modules/'.$name);
+		$saved_module = array();
+
+		if ($guid = always_set($files_model, 'guid'))
+		{
+			$saved_module = $this->_table->fetchOne('guid', $guid);
+		}
+
+		return new Rows($files_model, $saved_module);
+	}
+
+	public function get4Grid()
+	{
+		return new GridRows($this->get());
+	}
+
+	public function install($data)
+	{
+		$guid = gen_guid();
+
+		$item = array(
+			'title' => $data['info']['title'],
+			'description' => $data['info']['description'],
+			'menu' => serialize($data['menu']),
+			'guid' => $guid
+		);
+
+		$this->_table->insert($item);
+
+		$this->_saveGUID($guid, root_path().'/modules/'.$data['name']);
+	}
+
+	public function uninstall()
+	{
+		if (!$guid = always_set($this->get(), 'guid'))
+		{
+			return false;
+		}
+
+		$this->_table->delete('guid', $guid);
+	}
+
+	public function pin()
+	{
+		if (!$guid = always_set($this->get(), 'guid'))
+		{
+			return false;
+		}
+
+		$this->_table
+			->where('guid', $guid)
+			->update('pin=IF(pin=1, 0, 1)');
 	}
 
 	private function _getAllFromFiles()
@@ -80,29 +129,40 @@ class Modules extends SystemModel
 	{
 		$path = root_path().'/modules/'.$name;
 
+		if (!file_exists($path))
+		{
+			return array();
+		}
+
 		$conf = $path.'/config.php';
 
 		if (!file_exists($conf))
 		{
-			return false;
+			return array();
 		}
 
 		include $conf;
 
 		$guid = $this->_fetchGUID($path);
 
-		return array(
+		$res = array(
 			'info' => $info,
 			'menu' => $menu,
-			'guid' => $guid,
 			'name' => $name,
 			'pin' => 0,
 		);
+
+		if ($guid)
+		{
+			$res['guid'] = $guid;
+		}
+
+		return $res;
 	}
 
 	private function _fetchGUID($path)
 	{
-		$guid = '';
+		$guid = false;
 
 		$guid_file = $path.'/.guid';
 
@@ -114,10 +174,9 @@ class Modules extends SystemModel
 		return $guid;
 	}
 
-	private function _saveGUID($path)
+	private function _saveGUID($guid, $path)
 	{
 		$guid_path =  $path.'/.guid';
-		$guid = gen_guid();
 
 		if(file_put_contents($guid_path, $guid) === false)
 		{

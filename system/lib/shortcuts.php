@@ -2,6 +2,11 @@
 use System\Lib\Router;
 use System\Lib\Config;
 
+function root_path()
+{
+	return $_SERVER['DOCUMENT_ROOT'];
+}
+
 function pre($str, $die = false)
 {
 	echo '<pre>';

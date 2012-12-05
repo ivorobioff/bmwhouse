@@ -4434,6 +4434,7 @@ Lib.Requesty = {
 				if (_.isObject(data)){
 					for (var i in data){
 						if (updates[i] instanceof Models.Abstract.Model){
+							updates[i].clear({silent: true});
 							updates[i].set(data[i]);
 							continue ;
 						}
@@ -5638,7 +5639,7 @@ $(function(){
 					sortable: false,
 					
 					events: {
-						'click input': function(e){
+						'click input': function(e, model){
 							var $e = $(e.target);
 							var url = Resources.install_module;
 							
@@ -5648,12 +5649,7 @@ $(function(){
 							
 							Lib.Requesty.post({
 								url: url,
-								data: model.get('id'),
-								
-								success: function(){
-									
-								},
-								
+								data: {name: model.get('name')},							
 								error: function(error_handler){
 									error_handler.alert();
 								},
@@ -5664,7 +5660,7 @@ $(function(){
 					},
 					formatter: function(value, model){
 						var checked = '';
-						if (model.has('guid') && trim(model.get('guid')) != ''){
+						if (model.has('guid')){
 							checked = 'checked="checked"';
 						}
 						
@@ -5702,6 +5698,7 @@ $(function(){
 							}
 							Lib.Requesty.post({
 								url: Resources.pin_module,
+								data: {name: model.get('name')},
 								followers: model
 							});
 						}
@@ -5709,7 +5706,7 @@ $(function(){
 					
 					formatter: function(value, model, view){
 						
-						if (!model.has('guid') || trim(model.get('guid') == '')){
+						if (!model.has('guid')){
 							return '';
 						}
 						
@@ -5734,11 +5731,17 @@ $(function(){
 							if (!model.has('guid')){
 								return ;
 							}
+							
+							Lib.Requesty.post({
+								url: Resources.refresh_module,
+								data: {name: model.get('name')},
+								followers: model
+							});
 						}
 					},
 					
 					formatter: function(view, model){
-						if (!model.has('guid') || trim(model.get('guid') == '')){
+						if (!model.has('guid')){
 							return '';
 						}
 						return '<span class="light-icons cursor-pointer ui-icon-refresh"></span>';

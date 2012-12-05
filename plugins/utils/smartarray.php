@@ -74,7 +74,7 @@ abstract class SmartArray implements \ArrayAccess, \Iterator, \Countable
 
 		foreach ($this as $key => $value)
 		{
-			$res[$key] = $value;
+			$res[$key] = $value instanceof self ? $value->toArray() : $value;
 		}
 
 		return $res;

@@ -143,6 +143,7 @@ Lib.Requesty = {
 				if (_.isObject(data)){
 					for (var i in data){
 						if (updates[i] instanceof Models.Abstract.Model){
+							updates[i].clear({silent: true});
 							updates[i].set(data[i]);
 							continue ;
 						}
