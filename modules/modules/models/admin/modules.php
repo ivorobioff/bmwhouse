@@ -1,6 +1,8 @@
 <?php
 namespace Model\Modules\Admin;
 
+use Lib\Modules\InstalledResults;
+use Lib\Modules\InstalledRows;
 use Lib\Modules\GridRows;
 use Lib\Modules\Rows;
 use Db\Modules\Modules as TableModules;
@@ -19,24 +21,22 @@ class Modules extends SystemModel
 	}
 
 	/**
-	 * получаем данные о модуле из файла конфигурации смерджаные с сохранеными данными
+	 * Получаем список всех установленных не установленных модулей.
+	 * Если модуль установлен, то данные модуля берутся с базы
 	 * @see System\Mvc.Model::getAll()
 	 */
 	public function getAll()
 	{
-		if (!$files_modules = $this->_getAllFromFiles())
+		$from_files = $this->_getAllFromFiles();
+
+		$res = array();
+
+		foreach ($from_files as $from_file)
 		{
-			return array();
+			$res[]  = $this->_mergeModules($from_file, $this->_getInstalled(always_set($from_file, 'guid'))->toArray());
 		}
 
-		$saved_modules = $this->_table->fetchAll();
-
-		return new Results($files_modules, $saved_modules);
-	}
-
-	public function getAll4Grid()
-	{
-		return new GridResults($this->getAll());
+		return $res;
 	}
 
 	/**
@@ -45,24 +45,39 @@ class Modules extends SystemModel
 	 */
 	public function get()
 	{
-		if (!$files_model = $this->_getFromFile($this->_id))
-		{
-			return array();
-		}
+		$from_file = $this->_getFromFile($this->_id);
 
-		$saved_module = array();
+		return $this->_mergeModules($from_file, $this->_getInstalled(always_set($from_file, 'guid'))->toArray());
+	}
 
-		if ($guid = always_set($files_model, 'guid'))
-		{
-			$saved_module = $this->_table->fetchOne('guid', $guid);
-		}
-
-		return new Rows($files_model, $saved_module);
+	public function getAll4Grid()
+	{
+		return new GridResults($this->getAll());
 	}
 
 	public function get4Grid()
 	{
 		return new GridRows($this->get());
+	}
+
+	public function getAllInstalled()
+	{
+		return new InstalledResults($this->_table->fetchAll());
+	}
+
+	/**
+	 * Получаем установленый модуль по guid
+	 * @param string $guid
+	 * @return array
+	 */
+	private function _getInstalled($guid)
+	{
+		if (!$guid)
+		{
+			return array();
+		}
+
+		return  new InstalledRows($this->_table->fetchOne('guid', $guid));
 	}
 
 	public function install($data)
@@ -182,5 +197,28 @@ class Modules extends SystemModel
 		{
 			throw new SystemException('GUID модуля "'.$name.'" небыл сохранен', self::MODULE_GUID_NOT_SAVED);
 		}
+	}
+
+	private function _mergeModules(array $from_file, array $installed)
+	{
+		if (!$from_file)
+		{
+			return array();
+		}
+
+		unset($from_file['guid']);
+
+		if (!$installed)
+		{
+			return $from_file;
+		}
+
+		$from_file['info']['title'] = $installed['title'];
+		$from_file['info']['description'] = $installed['description'];
+		$from_file['pin'] = $installed['pin'];
+		$from_file['menu'] = $installed['menu'];
+		$from_file['guid'] = $installed['guid'];
+
+		return $from_file;
 	}
 }

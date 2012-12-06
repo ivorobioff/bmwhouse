@@ -1,6 +1,8 @@
 <?php
 namespace Ctest;
 
+use Plugins\Utils\SmartArray;
+
 class MakeSure extends \PHPUnit_Framework_TestCase
 {
 	public function testRef()
