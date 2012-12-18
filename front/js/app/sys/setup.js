@@ -27,6 +27,11 @@ function always_set(obj, val, def){
 	return obj[val];
 }
 
+function _t(key)
+{
+	return Models.Labels.getInstance().get(key);
+}
+
 
 /**
  * Создает синглтон для класа

@@ -30,4 +30,14 @@ abstract class Templates
 	{
 		$this->_params[$name] = $value;
 	}
+
+	public function __isset($name)
+	{
+		return isset($this->_params[$name]);
+	}
+
+	public function __unset($name)
+	{
+		unset($this->_params[$name]);
+	}
 }

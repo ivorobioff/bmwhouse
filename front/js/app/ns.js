@@ -6,4 +6,3 @@ var Routers = {Abstract: {}, Admin: {}};
 var Lib = {Abstract: {}, Admin: {}};
 var Resources = {};
 var DataSource = {};
-var Settings = {};

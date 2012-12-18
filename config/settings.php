@@ -6,6 +6,6 @@ $config['DB'] = array(
 	'dbname' => 'bmwhouse'
 );
 
-$config['DEFAULT_PATH'] = '/index/';
+$config['DEFAULT_PATH'] = '/home/';
 $config['DEFAULT_ADMIN_PATH'] = '/modules/index/pins';
 $config['ADMIN_NAME'] = 'admin';
