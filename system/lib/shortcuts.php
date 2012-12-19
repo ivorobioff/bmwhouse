@@ -1,6 +1,7 @@
 <?php
 use System\Lib\Router;
 use System\Lib\Config;
+use Facade\Auth\Index as FacadeAuth;
 
 function root_path()
 {
@@ -51,6 +52,11 @@ function get_admin_name()
 function is_admin()
 {
 	return Router::getInstance()->isAdmin();
+}
+
+function is_auth()
+{
+	return FacadeAuth::getInstance()->isAuth();
 }
 
 function gen_guid()
