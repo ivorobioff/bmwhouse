@@ -165,3 +165,46 @@ button:focus
    border-color:#096eb3;
 }
 
+.bqq-1
+{
+	text-align: center;
+	padding: 10px;
+	color: #666666;
+	font-size: 20px;
+	font-family: Tahoma;
+}
+
+.bqq-2
+{
+	border:1px dotted #cccccc;
+	padding: 20px;
+	margin: 30px;
+	margin-top: 10px;
+}
+
+.bqq-3
+{
+	width: 180px;
+}
+
+.bqq-4
+{
+    margin-left: auto;
+    margin-right: auto; 
+}
+
+.bqq-4 tr
+{
+	height: 35px;
+}
+
+.bqq-5
+{
+	padding-right: 70px;
+}
+
+.bqq-6
+{
+    text-align: center;
+    padding: 10px;
+}
