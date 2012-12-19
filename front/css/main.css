@@ -8,6 +8,19 @@ html, body
 	color: #333333;
 }
 
+a
+{
+	text-decoration: none;
+	color: #999999;
+}
+
+a:hover
+{
+	text-decoration: underline;
+	color: orangered;
+}
+
+
 input
 {
 	font-family: Arial;
