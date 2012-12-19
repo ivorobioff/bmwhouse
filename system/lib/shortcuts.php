@@ -56,6 +56,11 @@ function _t($text)
 	return $text;
 }
 
+function _url($url)
+{
+	return $url;
+}
+
 function get_admin_name()
 {
 	return Config::getInstance()->getSettings('ADMIN_NAME');
