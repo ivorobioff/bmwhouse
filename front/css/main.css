@@ -165,18 +165,26 @@ button:focus
    border-color:#096eb3;
 }
 
-.bqq-1
+/*.bqq-1
 {
 	text-align: center;
 	padding: 10px;
 	color: #666666;
 	font-size: 20px;
 	font-family: Tahoma;
+}*/
+
+
+.bqq-1
+{
+    text-align: right;
+    border-bottom: 1px dotted #cccccc;
+    padding: 10px;
 }
 
 .bqq-2
 {
-	border:1px dotted #cccccc;
+	/*border:1px dotted #cccccc;*/
 	padding: 20px;
 	margin: 30px;
 	margin-top: 10px;
@@ -206,5 +214,28 @@ button:focus
 .bqq-6
 {
     text-align: center;
-    padding: 10px;
+    margin-top: 30px;
+}
+
+.bqq-7
+{
+	/*#F7F7F7;*/
+    background-color: #FFF5F2;
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 25px;
+    padding-bottom: 30px;
+}
+
+.bqq-8
+{
+	float: right;
+}
+
+.bqq-9
+{
+	float: left;
+	font-size: 18px;
+	color: #666666;
 }
