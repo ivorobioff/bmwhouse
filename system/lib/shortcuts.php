@@ -34,9 +34,14 @@ function is_location($path)
 	return trim(\System\Lib\Http::location(), '/') == trim($path, '/');
 }
 
-function _t($text)
+function _t($alias)
 {
-	return $text;
+	/*
+	 * TODO: должно быть переделано
+	 */
+	include '/config/labels.php';
+
+	return always_set($labels, $alias, $alias);
 }
 
 function _url($url)

@@ -3374,11 +3374,9 @@ var Helpers = {Abstract: {}, Formatter: {}};
 var Views = {Abstract: {}, Admin: {}, Grid: {}};
 var Collections = {Abstract: {}, Admin: {}, Grid: {}};
 var Models = {Abstract: {}, Admin: {}, Grid: {}};
-var Routers = {Abstract: {}, Admin: {}};
 var Lib = {Abstract: {}, Admin: {}};
 var Resources = {};
 var DataSource = {};
-var Settings = {};
 /**
  * Местоположение ресурсов на сервере
  */
@@ -3412,6 +3410,11 @@ function always_set(obj, val, def){
 	}
 	
 	return obj[val];
+}
+
+function _t(key)
+{
+	return Models.Labels.getInstance().get(key);
 }
 
 
